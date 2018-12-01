@@ -31,7 +31,7 @@ code merge start
 	j:=0;
 	k:=l;
 
-	as long as (i < n1 && j < n2) 
+	as long as (i < n1 and j < n2) 
 		start
 			in case that (L[i] <= R[j]) 
 				start
