@@ -1,0 +1,86 @@
+Package tesauro;
+
+Helpers
+ all = [0 .. 0xFFFF];
+ digito = ['0' .. '9'];
+ bin = ['0' + '1'];
+ letra =[['a'..'z']+['A' .. 'Z']];
+ number = digito+;
+ espaco = ' ';
+ tab = 9;
+ cr = 13;
+ lf = 10;
+ eol = cr lf | cr | lf;
+ not_cr_lf = [all - [cr + lf]];
+ not_squotes = [not_cr_lf - '''];
+ not_dquotes = [not_cr_lf - '"'];
+ not_rcbrack = [all - '}'];
+ 
+
+Tokens
+ /*Palavras reservadas*/
+ code = 'code';
+ symbol = 'symbol';
+ real = 'real';
+ integer = 'integer';
+ start = 'start';
+ finish = 'finish';
+ vector = 'vector';
+ const = 'unalterable';
+ in_case_that = 'in'(espaco | tab | eol)+'case'(espaco | tab | eol)+'that';
+ as_long_as = 'as'(espaco | tab | eol)+'long'(espaco | tab | eol)+'as';
+ considering = 'considering';
+ show = 'show';
+ capture = 'capture';
+ 
+ 
+
+ /*Valores dos tipos*/
+
+ sym_val = ''' not_squotes ''';
+ sym_vec_val =  '"' not_dquotes* '"';
+ int_val = 'd'?digito|'b'bin+;
+ 
+ /*Comentarios*/
+
+ comment = '{' not_rcbrack* '}';
+
+ /*Operadores*/
+
+ plus = '+';
+ minus = '-';
+ mult = '*';
+ div = '/';
+ mod = '%';
+ menor = '<';
+ maior = '>';
+ maior_e = '>=';
+ menor_e = '<=';
+ igual = '==';
+ att = ':=';
+ att_const = '=';
+ not = '!';
+ and = 'and';
+ or = 'or';
+ xor = 'xor';
+
+ 
+
+ /*Delimitadores*/
+ l_par = '(';
+ r_par = ')';
+ l_colch = '[';
+ r_colch = ']';
+ l_chav = '{';
+ r_chav = '}';
+ p_v = ';';
+ comma = ',';
+ 
+ /*Outros*/
+
+ id = letra(letra|'_')*;
+ blank = (espaco | tab | eol)+;
+
+
+Ignored Tokens
+ blank;
