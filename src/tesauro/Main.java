@@ -10,15 +10,11 @@ import tesauro.node.Token;
 public class Main {
 	public static void main(String[] args)
 	{
-		try
-		{
+		try{
 			String arquivo = "teste/merge.tesauro";
-			Lexer lexer =
-					new Lexer(
-							new PushbackReader(  
-									new FileReader(arquivo), 1024)); 			
-			
-					
+			Lexer lexer = new Lexer(
+							 new PushbackReader(  
+									new FileReader(arquivo), 1024)); 					
 			Token token;
 			while(!((token = lexer.next()) instanceof EOF)) {
 				System.out.print(token.getClass());

@@ -15,7 +15,7 @@ Helpers
  not_squotes = [not_cr_lf - '''];
  not_dquotes = [not_cr_lf - '"'];
  not_rcbrack = [all - '}'];
- 
+ dot = '.';
 
 Tokens
  /*Palavras reservadas*/
@@ -32,6 +32,11 @@ Tokens
  considering = 'considering';
  show = 'show';
  capture = 'capture';
+ else = 'else';
+ do = 'do';
+ from = 'from';
+ to = 'to';
+ by = 'by'; 
  
  
 
@@ -81,6 +86,6 @@ Tokens
  id = letra(letra|'_')*;
  blank = (espaco | tab | eol)+;
 
-
 Ignored Tokens
  blank;
+ 

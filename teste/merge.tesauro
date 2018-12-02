@@ -3,7 +3,7 @@ code merge start
 	show("Qual o tamanho do vetor?");
 	capture(n);
 
-	integer vector arr[n];
+	real vector arr[n];
 	considering i from 0 to n by 1 do 
 		start
 			show("Valor:");
@@ -12,13 +12,16 @@ code merge start
 	show("Valor de l:");
 	capture(l);
 	show("Valor de r:");
-	capture(r);
-	m:= l+(r-1)/2;
+	capture(r); 
+	in case that r%2==0 do
+		m:= l+r/2;
+	else
+		m:= l+(r-1)/2;
 	n1:= m - l +1;
 	n2 = r - m
     
     { create temp arrays }
-	integer vector [n1] L, [n2] L;
+	real vector [n1] L, [n2] L;
 
 	{ Copy data to temp arrays L[] and R[] }
 	considering i from 0 to n1 by 1 do
@@ -31,9 +34,9 @@ code merge start
 	j:=0;
 	k:=l;
 
-	as long as (i < n1 and j < n2) 
+	as long as (!(!(i < n1) or !(j < n2))) 
 		start
-			in case that (L[i] <= R[j]) 
+			in case that (L[i] <= R[j]) do
 				start
 					arr[k]:= L[i];
 					i:= i + 1;
@@ -47,7 +50,7 @@ code merge start
 		finish;	
 	{ Copy the remaining elements of L[], if there 
        are any }
-	as long as (i < n1)
+	as long as (n1 > i)
 		start
 			arr[k]:= L[i];
 			i = i + 1;
@@ -55,7 +58,7 @@ code merge start
 		finish;
 	{ Copy the remaining elements of R[], if there 
        are any }	
-	as long as (j < n2)
+	as long as (-j >= -(n2 - 1))
 		start
 			arr[k]:= R[j];
 			j = j + 1;
