@@ -44,7 +44,7 @@ Tokens
 
  sym_val = ''' not_squotes ''';
  sym_vec_val =  '"' not_dquotes* '"';
- int_val = 'd'?digito|'b'bin+;
+ int_val = number|'d'number|'b'bin+;
  
  /*Comentarios*/
 
