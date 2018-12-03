@@ -27,7 +27,7 @@ code merge start
 	considering i from 1 to n1 by 1 do
 		L[i]:= arr[l + i];
 	considering j from 0 to n2 by 1 do
-		R[j]:= arr[m + 1+ j]; 
+		R[j]:= arr[m + 1+ j];
 
 	{ Merge the temp arrays back into arr[l..r]}
 	i:=b1;
@@ -63,5 +63,5 @@ code merge start
 			arr[k]:= R[j];
 			j = j + 1;
 			k = k + 1;
-		finish;	
+		finish;
 finish

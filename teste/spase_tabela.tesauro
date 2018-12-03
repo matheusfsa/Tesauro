@@ -31,7 +31,7 @@ code sparse_table start
 			exp := exp*2;
 			in case that b < j do
 				exp2 := exp2*2;
-		finish
+		finish;
 			
 		as long as i < 1 + n - exp do
 		start
@@ -39,9 +39,9 @@ code sparse_table start
 				st[i][j] = st[i][j - 1];
 			else
 				st[i][j] = st[i + exp2][j - 1];
-		finish
+		finish;
 		
-	finish
+	finish;
 	
 	integer q, l, r, j;
 	show("Digite o numero de consultas ai, meu consagrado: ");
@@ -66,5 +66,5 @@ code sparse_table start
 			show(st[r - exp + 1][j]);
 		
 		q = q - 1;
-	finish
+	finish;
 finish
