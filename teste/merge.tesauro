@@ -3,7 +3,7 @@ code merge start
 	show("Qual o tamanho do vetor?");
 	capture(n);
 
-	real vector arr[n];
+	real vector [n] arr;
 	considering i from 1 to n by 1 do 
 		start
 			show("Valor:");
@@ -21,7 +21,7 @@ code merge start
 	n2:= r - m;
     
     { create temp arrays }
-	real vector [n1] L, [n2] L;
+	real vector [n1] L, [n2] R;
 
 	{ Copy data to temp arrays L[] and R[] }
 	considering i from 1 to n1 by 1 do
@@ -34,7 +34,7 @@ code merge start
 	j:=1;
 	k:=d1;
 
-	as long as (!(!(i < n1) or !(j < n2))) 
+	as long as (!(!(i < n1) or !(j < n2))) do
 		start
 			in case that (L[i] <= R[j]) do
 				start
@@ -50,7 +50,7 @@ code merge start
 		finish;	
 	{ Copy the remaining elements of L[], if there 
        are any }
-	as long as (n1 > i)
+	as long as (n1 > i) do
 		start
 			arr[k]:= L[i];
 			i := i + 1;
@@ -58,7 +58,7 @@ code merge start
 		finish
 	{ Copy the remaining elements of R[], if there 
        are any }	
-	as long as (-j >= -(n2 - 1))
+	as long as (-j >= -(n2 - 1)) do
 		start
 			arr[k]:= R[j];
 			j := j + 1;
