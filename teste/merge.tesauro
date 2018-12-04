@@ -1,5 +1,5 @@
 code merge start
-	integer l, m, r, i, j, k, n1, n2, n;
+	integer l, m, r, i, j, k, n_um, n_dois, n;
 	show("Qual o tamanho do vetor?");
 	capture(n);
 
@@ -17,16 +17,16 @@ code merge start
 		m:= l+r/2;
 	else
 		m:= l+(r-1)/2;
-	n1:= m - l +1;
-	n2:= r - m;
+	n_um:= m - l +1;
+	n_dois:= r - m;
     
     { create temp arrays }
-	real vector [n1] L, [n2] R;
+	real vector [n_um] L, [n_dois] R;
 
 	{ Copy data to temp arrays L[] and R[] }
-	considering i from 1 to n1 by 1 do
+	considering i from 1 to n_um by 1 do
 		L[i]:= arr[l + i];
-	considering j from 0 to n2 by 1 do
+	considering j from 0 to n_dois by 1 do
 		R[j]:= arr[m + 1+ j];
 
 	{ Merge the temp arrays back into arr[l..r]}
@@ -34,7 +34,7 @@ code merge start
 	j:=1;
 	k:=d1;
 
-	as long as (!(!(i < n1) or !(j < n2))) do
+	as long as (!(!(i < n_um) or !(j < n_dois))) do
 		start
 			in case that (L[i] <= R[j]) do
 				start
@@ -50,7 +50,7 @@ code merge start
 		finish;	
 	{ Copy the remaining elements of L[], if there 
        are any }
-	as long as (n1 > i) do
+	as long as (n_um > i) do
 		start
 			arr[k]:= L[i];
 			i := i + 1;
@@ -58,7 +58,7 @@ code merge start
 		finish
 	{ Copy the remaining elements of R[], if there 
        are any }	
-	as long as (-j >= -(n2 - 1)) do
+	as long as (-j >= -(n_dois - 1)) do
 		start
 			arr[k]:= R[j];
 			j := j + 1;
