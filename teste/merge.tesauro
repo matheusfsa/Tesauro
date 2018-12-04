@@ -18,7 +18,7 @@ code merge start
 	else
 		m:= l+(r-1)/2;
 	n1:= m - l +1;
-	n2 = r - m
+	n2:= r - m;
     
     { create temp arrays }
 	real vector [n1] L, [n2] L;
@@ -32,7 +32,7 @@ code merge start
 	{ Merge the temp arrays back into arr[l..r]}
 	i:=b1;
 	j:=1;
-	k:=dl;
+	k:=d1;
 
 	as long as (!(!(i < n1) or !(j < n2))) 
 		start
@@ -45,23 +45,23 @@ code merge start
 				start
 					arr[k]:= R[j];
 					j:= j + 1;
-				finish;
-			k = k + 1;
+				finish
+			k := k + 1;
 		finish;	
 	{ Copy the remaining elements of L[], if there 
        are any }
 	as long as (n1 > i)
 		start
 			arr[k]:= L[i];
-			i = i + 1;
-			k = k + 1;
-		finish;
+			i := i + 1;
+			k := k + 1;
+		finish
 	{ Copy the remaining elements of R[], if there 
        are any }	
 	as long as (-j >= -(n2 - 1))
 		start
 			arr[k]:= R[j];
-			j = j + 1;
-			k = k + 1;
-		finish;
+			j := j + 1;
+			k := k + 1;
+		finish
 finish

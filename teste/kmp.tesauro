@@ -39,7 +39,7 @@ code kmp start
 				start
 					j := j + 1;
 					i := i + 1;
-				finish;
+				finish
 			in case that (j == M) do
 				start
 					show("Found pattern at index: ");
@@ -53,9 +53,7 @@ code kmp start
 							j := lps[j - 1];
 						else
 							i := i + 1;
-						
 					finish
-				
 		finish
 finish
 	
