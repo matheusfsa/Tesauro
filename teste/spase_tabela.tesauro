@@ -16,7 +16,7 @@ code sparse_table start
 	
 	k := n;
 	
-	integer vector [n][k]st;
+	integer vector [n][k] st;
 	
 	considering i from 1 to n by 1 do
 		st[i][1] = vetorzera[i];
@@ -24,21 +24,21 @@ code sparse_table start
 	considering j from 1 to k by 1 do
 	start
 		i := 0;
-		real exp := 1.0;
-		real exp2 := 1.0;
+		integer exp := 1;
+		integer exp_dois := 1;
 		considering b from 1 to j by 1 do
 		start
 			exp := exp*2;
 			in case that b < j do
-				exp2 := exp2*2;
+				exp_dois := exp_dois*2;
 		finish
 			
 		as long as i < 1 + n - exp do
 		start
-			in case that (st[i][j - 1] < st[i + exp2][j - 1]) do
+			in case that (st[i][j - 1] < st[i + exp_dois][j - 1]) do
 				st[i][j] := st[i][j - 1];
 			else
-				st[i][j] := st[i + exp2][j - 1];
+				st[i][j] := st[i + exp_dois][j - 1];
 		finish
 		
 	finish
@@ -47,7 +47,7 @@ code sparse_table start
 	show("Digite o numero de consultas ai, meu consagrado: ");
 	capture(q);
 	
-	as long as((q > 0) and ( (q > 0) xor  !1)) do
+	as long as((q > 0) and ( (q > 0) xor !1)) do
 	start
 		show("Digite o limite inferior aí, meu consagrado: ");
 		capture(l);
@@ -57,7 +57,7 @@ code sparse_table start
 		show("Ta aí o resultado, meu consagrado: ");
 		
 		j :=  r - l + 1;
-		real expj := 1.0;
+		integer expj := 1;
 		considering b from 1 to j by 1 do
 			exp := exp*2;
 		in case that (st[l][j] < st[r - exp + 1][j]) do
