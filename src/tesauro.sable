@@ -15,7 +15,6 @@ Helpers
  not_squotes = [not_cr_lf - '''];
  not_dquotes = [not_cr_lf - '"'];
  not_rcbrack = [all - '}'];
- dot = '.';
  exp = 'E'('-')?number;
 
 Tokens
@@ -90,5 +89,5 @@ Tokens
  blank = (espaco | tab | eol)+;
 
 Ignored Tokens
- blank;
+ blank, comment;
  
