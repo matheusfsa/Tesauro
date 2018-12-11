@@ -16,6 +16,7 @@ Helpers
  not_dquotes = [not_cr_lf - '"'];
  not_rcbrack = [all - '}'];
  dot = '.';
+ exp = 'E'('-')?number;
 
 Tokens
  /*Palavras reservadas*/
@@ -44,7 +45,8 @@ Tokens
 
  sym_val = ''' not_squotes ''';
  sym_vec_val =  '"' not_dquotes* '"';
- int_val = number|'d'number|'b'bin+;
+ real_val = ('-')?number'.'number(exp)?;
+ int_val = ('-')?('d')?number|('-')?'b'bin+;
  
  /*Comentarios*/
 
@@ -62,6 +64,7 @@ Tokens
  maior_e = '>=';
  menor_e = '<=';
  igual = '==';
+ diff = '!=';
  att = ':=';
  att_const = '=';
  not = '!';
