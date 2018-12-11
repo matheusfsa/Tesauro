@@ -2,13 +2,14 @@ code merge start
 	integer l, m, r, i, j, k, n_um, n_dois, n;
 	show("Qual o tamanho do vetor?");
 	capture(n);
-
+	real a;
+	n := 5
+	arr[1] := 2.32;
+	arr[2] := -1;
+	arr[3] := -52.5412;
+	arr[4] := 45.556E-3;
+	arr[5] := 2.36E2;
 	real vector [n] arr;
-	considering i from 1 to n by 1 do 
-		start
-			show("Valor:");
-			capture(arr[i]);
-		finish
 	show("Valor de l:");
 	capture(l);
 	show("Valor de r:");
