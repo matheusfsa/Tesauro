@@ -12,8 +12,8 @@ Helpers
  lf = 10;
  eol = cr lf | cr | lf;
  not_cr_lf = [all - [cr + lf]];
- not_squotes = [not_cr_lf - '''];
- not_dquotes = [not_cr_lf - '"'];
+ not_squotes = [all - '''];
+ not_dquotes = [all - '"'];
  not_rcbrack = [all - '}'];
  exp = 'E'('-')?number;
 
