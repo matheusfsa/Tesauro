@@ -92,15 +92,41 @@ Ignored Tokens
  blank, comment;
  
 Productions
+		
+	exp = {fator} fator
+		| {sum} exp plus fator
+		| {op_l} exp op_logica fator
+		| {minus} exp minus fator;
+		
+
+	fator = {termo} termo 
+  		| {mult} fator mult termo 
+  		| {div} fator div termo 
+  		| {mod} fator mod termo
+  		| {min_un} minus termo
+  		| {diff} diff termo;
+  	
+  	termo = {valor} valor 
+  		| {var} var
+  		| {par} l_par exp r_par;
+		
 	var = id var_vec*;
+	
 	var_vec = {var_vec} l_colch int_val r_colch;
-	exp = {valor} valor
-		| {var} var
-		| {exp_par} l_par exp r_par;
+	
 	valor = {sym} sym_val 
 		| {real} real_val
 		| {int} int_val 
 		| {string} sym_vec_val;
 		
+	op_logica = {maior} maior
+		| {menor} menor
+		| {maior_e} maior_e
+		| {menor_e} menor_e
+		| {igual} igual
+		| {diff} diff
+		| {and} and
+		| {or} or
+		| {xor} xor;	
 		 
         
