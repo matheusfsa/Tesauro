@@ -5,7 +5,7 @@ code merge start
 	real a;
 	n := 5
 	arr[1] := 2.32;
-	arr[2] := -1;
+	arr[2] := -b01;
 	arr[3] := -52.5412;
 	arr[4] := 45.556E-3;
 	arr[5] := 2.36E2;

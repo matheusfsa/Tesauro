@@ -91,3 +91,16 @@ Tokens
 Ignored Tokens
  blank, comment;
  
+Productions
+	var = id var_vec*;
+	var_vec = {var_vec} l_colch int_val r_colch;
+	exp = {valor} valor
+		| {var} var
+		| {exp_par} l_par exp r_par;
+	valor = {sym} sym_val 
+		| {real} real_val
+		| {int} int_val 
+		| {string} sym_vec_val;
+		
+		 
+        

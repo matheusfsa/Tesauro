@@ -1,29 +1,33 @@
 package tesauro;
+import tesauro.parser.*;
+import tesauro.lexer.*;
+import tesauro.node.*;
+import java.io.*;
 
-import java.io.FileReader;
-import java.io.PushbackReader;
-
-import tesauro.lexer.Lexer;
-import tesauro.node.EOF;
-import tesauro.node.Token;
-
-public class Main {
-	public static void main(String[] args)
-	{
-		try{
-			String arquivo = "teste/merge.tesauro";
-			Lexer lexer = new Lexer(
-							 new PushbackReader(  
-									new FileReader(arquivo), 1024)); 					
-			Token token;
-			while(!((token = lexer.next()) instanceof EOF)) {
-				System.out.print(token.getClass());
-				System.out.println(" ( "+token.toString()+")");
-			}
-		}
-		catch(Exception e)
-		{
-			System.out.println(e.getMessage());
-		}
-	}
+public class Main
+{
+ public static void main(String[] args)
+ {
+  try
+  {
+   String arquivo = "teste/teste.tesauro";
+  
+   Parser p =
+    new Parser(
+    new Lexer(
+    new PushbackReader(  
+    new FileReader(arquivo), 1024))); 
+   
+   Start tree = p.parse();
+   //Imprime árvore na saída padrão
+   //tree.apply(new ASTPrinter());
+   //Imprime árvore em interface gráfica
+   tree.apply(new ASTDisplay());
+  }
+  catch(Exception e)
+  {
+	  e.printStackTrace();
+   System.out.println(e.getMessage());
+  }
+ }
 }
