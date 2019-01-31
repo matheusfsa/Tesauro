@@ -60,8 +60,8 @@ Tokens
  mod = '%';
  menor = '<';
  maior = '>';
- maior_e = '>=';
- menor_e = '<=';
+ maior_i = '>=';
+ menor_i = '<=';
  igual = '==';
  diff = '!=';
  att = ':=';
@@ -92,11 +92,45 @@ Ignored Tokens
  blank, comment;
  
 Productions
+	code = cmd;
+	cmd = {var} var att exp p_v
+		| {const} const var att_const exp p_v
+		| {capture} capture l_par var_comma* var r_par p_v
+		| {show} show l_par exp_comma* exp r_par p_v
+		| {cmd_cond} cmd_cond;
+	
+	var_comma = var comma;	
+	
+	exp_comma = exp comma;	
+	
+	cmd_cond ={as_long_as} as_long_as l_par exp r_par do cmd
+		| {considering} considering var from [ini]:exp to [fim]:exp by [inc]:exp do cmd;
+	
+	else_cmd = else cmd;	
+	exp = or_op;
+	
+	or_op = {and_op} and_op
+		| {or} or_op or and_op;
 		
-	exp = {fator} fator
-		| {sum} exp plus fator
-		| {op_l} exp op_logica fator
-		| {minus} exp minus fator;
+	and_op = {xor_op} xor_op
+		| {and} and_op and xor_op; 
+		
+	xor_op = {eq_op} eq_op
+		| {xor} xor_op xor eq_op; 
+	
+	eq_op = {rel_op} rel_op
+		| {igual} eq_op igual rel_op
+		| {diff} eq_op diff rel_op;
+		
+	rel_op = {op} op
+		| {maior} rel_op maior op
+		| {menor} rel_op menor op
+		| {maior_i} rel_op maior_i op
+		| {menor_i} rel_op menor_i op;
+		
+	op = {fator} fator
+		| {sum} op plus fator
+		| {minus} op minus fator;
 		
 
 	fator = {termo} termo 
@@ -104,7 +138,7 @@ Productions
   		| {div} fator div termo 
   		| {mod} fator mod termo
   		| {min_un} minus termo
-  		| {diff} diff termo;
+  		| {not} not termo;
   	
   	termo = {valor} valor 
   		| {var} var
@@ -118,15 +152,6 @@ Productions
 		| {real} real_val
 		| {int} int_val 
 		| {string} sym_vec_val;
-		
-	op_logica = {maior} maior
-		| {menor} menor
-		| {maior_e} maior_e
-		| {menor_e} menor_e
-		| {igual} igual
-		| {diff} diff
-		| {and} and
-		| {or} or
-		| {xor} xor;	
+
 		 
         

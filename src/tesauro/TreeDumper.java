@@ -52,7 +52,7 @@ public class TreeDumper extends DepthFirstAdapter {
 
         try {
             Start start = parser.parse();
-            start.getPExp().apply(new TreeDumper(new PrintWriter(System.out)));
+            start.getPCode().apply(new TreeDumper(new PrintWriter(System.out)));
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
