@@ -93,7 +93,11 @@ Ignored Tokens
  
 Productions
 	code = cmd;
-	cmd = {var} var att exp p_v
+	
+	cmd = {cmd1} cmd_n_if
+		| {cmd2} ict_cmd;
+		
+	cmd_n_if = {var} var att exp p_v
 		| {const} const var att_const exp p_v
 		| {capture} capture l_par var_comma* var r_par p_v
 		| {show} show l_par exp_comma* exp r_par p_v
@@ -102,11 +106,19 @@ Productions
 	var_comma = var comma;	
 	
 	exp_comma = exp comma;	
-	
+		
 	cmd_cond ={as_long_as} as_long_as l_par exp r_par do cmd
 		| {considering} considering var from [ini]:exp to [fim]:exp by [inc]:exp do cmd;
+		
 	
-	else_cmd = else cmd;	
+	ict_cmd= {if} ict
+		| {if_else} ict_else;
+	
+	ict_else = {ict} in_case_that l_par exp r_par do [cmd1]:ict_else else [cmd2]:ict_else
+			| {outra} cmd_n_if;
+			
+	ict =  {ict} in_case_that l_par exp r_par 
+			|{else} in_case_that l_par exp r_par else ict;
 	exp = or_op;
 	
 	or_op = {and_op} and_op
