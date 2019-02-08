@@ -92,33 +92,41 @@ Ignored Tokens
  blank, comment;
  
 Productions
-	code = cmd;
+	programa = code id bloco;
 	
-	cmd = {cmd1} cmd_n_if
-		| {cmd2} ict_cmd;
+	bloco = start declaracao* cmd* finish;
+	
+	declaracao = {var} tipo id_comma* id p_v
+		| {constante} const tipo id p_v
+		| {const_att} const tipo id att_const valor p_v;
+	
+	cmd = {ict_matched}  ict_matched
+		| {ict_unmatched} ict_unmatched;
+	
+	ict_matched = {ict} in_case_that l_par exp r_par do [cmd1]:ict_matched else [cmd2]:ict_matched
+			| {outra} other_cmd;
+			
+	ict_unmatched =  {ict} in_case_that l_par exp r_par cmd
+			|{else} in_case_that l_par exp r_par ict_matched else ict_unmatched;
+	
+	other_cmd = {att} att_cmd
+			| {func} func_cmd
+			| {iteration} iteration_cmd
+			| {bloco} bloco;
+			
+	att_cmd = {var} var att exp p_v
+		| {const} const var att_const exp p_v;
 		
-	cmd_n_if = {var} var att exp p_v
-		| {const} const var att_const exp p_v
-		| {capture} capture l_par var_comma* var r_par p_v
-		| {show} show l_par exp_comma* exp r_par p_v
-		| {cmd_cond} cmd_cond;
-	
+	func_cmd = {capture} capture l_par var_comma* var r_par p_v
+		| {show} show l_par exp_comma* exp r_par p_v;
+		
+	iteration_cmd = {as_long_as} as_long_as l_par exp r_par do cmd
+		| {considering} considering var from [ini]:exp to [fim]:exp by [inc]:exp do cmd;
+					
 	var_comma = var comma;	
 	
 	exp_comma = exp comma;	
-		
-	cmd_cond ={as_long_as} as_long_as l_par exp r_par do cmd
-		| {considering} considering var from [ini]:exp to [fim]:exp by [inc]:exp do cmd;
-		
-	
-	ict_cmd= {if} ict
-		| {if_else} ict_else;
-	
-	ict_else = {ict} in_case_that l_par exp r_par do [cmd1]:ict_else else [cmd2]:ict_else
-			| {outra} cmd_n_if;
 			
-	ict =  {ict} in_case_that l_par exp r_par 
-			|{else} in_case_that l_par exp r_par else ict;
 	exp = or_op;
 	
 	or_op = {and_op} and_op
@@ -156,7 +164,21 @@ Productions
   		| {var} var
   		| {par} l_par exp r_par;
 		
+
 	var = id var_vec*;
+	
+	tipo_base = {symbol} symbol 
+			| {real} real
+			| {integer} integer;
+			
+	tipo = {simples} tipo_base
+		| {composto} tipo_base vector;
+		
+	id_comma = id comma;
+	
+	tipo_vec = l_colch exp r_colch;
+	
+	vec_tipo = vector [obr]:tipo_vec [opc]: tipo_vec*;
 	
 	var_vec = {var_vec} l_colch int_val r_colch;
 	
@@ -164,6 +186,5 @@ Productions
 		| {real} real_val
 		| {int} int_val 
 		| {string} sym_vec_val;
+		
 
-		 
-        
