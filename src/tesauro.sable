@@ -44,8 +44,8 @@ Tokens
 
  sym_val = ''' not_squotes ''';
  sym_vec_val =  '"' not_dquotes* '"';
- real_val = ('-')?number'.'number(exp)?;
- int_val = ('-')?('d')?number|('-')?'b'bin+;
+ real_val = number'.'number(exp)?;
+ int_val = ('d')?number|('-')?'b'bin+;
  
  /*Comentarios*/
 
@@ -96,6 +96,32 @@ Productions
 	
 	bloco = start declaracao* cmd* finish;
 	
+	var = id var_vec*;
+	
+	tipo_base = {symbol} symbol 
+			| {real} real
+			| {integer} integer;
+			
+	tipo = {simples} tipo_base
+		| {composto} tipo_base vector tipo_vec+;
+		
+	var_comma = var comma;	
+	
+	exp_comma = exp comma;	
+	
+	id_comma = id comma;s
+	
+	tipo_vec = l_colch exp r_colch;
+	
+	vec_tipo = vector [obr]:tipo_vec [opc]: tipo_vec*;
+	
+	var_vec = {var_vec} l_colch exp r_colch;
+	
+	valor = {sym} sym_val 
+		| {real} real_val
+		| {int} int_val 
+		| {string} sym_vec_val;
+		
 	declaracao = {var} tipo id_comma* id p_v
 		| {constante} const tipo id p_v
 		| {const_att} const tipo id att_const valor p_v;
@@ -134,9 +160,7 @@ Productions
 	iteration_cmd_no_short_ict = {as_long_as} as_long_as l_par exp r_par do cmd_no_short_ict
 		| {considering} considering var from [ini]:exp to [fim]:exp by [inc]:exp do cmd_no_short_ict;
 					
-	var_comma = var comma;	
 	
-	exp_comma = exp comma;	
 			
 	exp = or_op;
 	
@@ -176,26 +200,6 @@ Productions
   		| {par} l_par exp r_par;
 		
 
-	var = id var_vec*;
 	
-	tipo_base = {symbol} symbol 
-			| {real} real
-			| {integer} integer;
-			
-	tipo = {simples} tipo_base
-		| {composto} tipo_base vector;
-		
-	id_comma = id comma;
-	
-	tipo_vec = l_colch exp r_colch;
-	
-	vec_tipo = vector [obr]:tipo_vec [opc]: tipo_vec*;
-	
-	var_vec = {var_vec} l_colch int_val r_colch;
-	
-	valor = {sym} sym_val 
-		| {real} real_val
-		| {int} int_val 
-		| {string} sym_vec_val;
 		
 
