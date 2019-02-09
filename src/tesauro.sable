@@ -100,20 +100,28 @@ Productions
 		| {constante} const tipo id p_v
 		| {const_att} const tipo id att_const valor p_v;
 	
-	cmd = {ict_matched}  ict_matched
-		| {ict_unmatched} ict_unmatched;
 	
-	ict_matched = {ict} in_case_that l_par exp r_par do [cmd1]:ict_matched else [cmd2]:ict_matched
-			| {outra} other_cmd;
-			
-	ict_unmatched =  {ict} in_case_that l_par exp r_par cmd
-			|{else} in_case_that l_par exp r_par ict_matched else ict_unmatched;
+	cmd = {cmd_sem_coisa} cmd_sem_coisa	
+		| {ict_do}	ict_do
+		| {ict_do_else}	ict_do_else
+		| {iteration_cmd} iteration_cmd
+		| {bloco} bloco;
+		
+	cmd_no_short_ict = {cmd_sem_coisa} cmd_sem_coisa 
+		| {ict_do_else_no_if}	ict_do_else_no_short_ict
+		| {iteration_cmd_no_if}	iteration_cmd_no_short_ict
+		| {bloco} bloco;	
+		
+	cmd_sem_coisa = {att_cmd}	att_cmd
+		| {func_cmd}	func_cmd;
+		
+	ict_do = in_case_that l_par exp r_par do cmd;
 	
-	other_cmd = {att} att_cmd
-			| {func} func_cmd
-			| {iteration} iteration_cmd
-			| {bloco} bloco;
-			
+	ict_do_else = in_case_that l_par exp r_par do cmd_no_short_ict else cmd;
+	
+	ict_do_else_no_short_ict = in_case_that l_par exp r_par do [cmd1]:cmd_no_short_ict else [cmd2]:cmd_no_short_ict;
+	
+	
 	att_cmd = {var} var att exp p_v
 		| {const} const var att_const exp p_v;
 		
@@ -122,6 +130,9 @@ Productions
 		
 	iteration_cmd = {as_long_as} as_long_as l_par exp r_par do cmd
 		| {considering} considering var from [ini]:exp to [fim]:exp by [inc]:exp do cmd;
+		
+	iteration_cmd_no_short_ict = {as_long_as} as_long_as l_par exp r_par do cmd_no_short_ict
+		| {considering} considering var from [ini]:exp to [fim]:exp by [inc]:exp do cmd_no_short_ict;
 					
 	var_comma = var comma;	
 	
