@@ -96,57 +96,49 @@ Productions
 	
 	bloco = start declaracao* cmd* finish;
 	
-	var = id var_vec*;
+	declaracao = {var} tipo id_comma* id p_v
+		| {constante} const tipo id p_v
+		| {const_att} const tipo id att_const valor p_v;
+	
+	id_comma = id comma;
 	
 	tipo_base = {symbol} symbol 
-			| {real} real
-			| {integer} integer;
-			
+		| {real} real
+		| {integer} integer;	
+	
 	tipo = {simples} tipo_base
 		| {composto} tipo_base vector tipo_vec+;
 		
-	var_comma = var comma;	
+	tipo_vec = l_colch int_val r_colch;
 	
-	exp_comma = exp comma;	
+	var = id var_vec*;
 	
-	id_comma = id comma;s
-	
-	tipo_vec = l_colch exp r_colch;
-	
-	vec_tipo = vector [obr]:tipo_vec [opc]: tipo_vec*;
-	
-	var_vec = {var_vec} l_colch exp r_colch;
+	var_vec = {var_vec} l_colch int_val r_colch;	
 	
 	valor = {sym} sym_val 
 		| {real} real_val
 		| {int} int_val 
 		| {string} sym_vec_val;
-		
-	declaracao = {var} tipo id_comma* id p_v
-		| {constante} const tipo id p_v
-		| {const_att} const tipo id att_const valor p_v;
 	
-	
-	cmd = {cmd_sem_coisa} cmd_sem_coisa	
-		| {ict_do}	ict_do
+	cmd = {cmd_sem_coisa} cmd_sem_cmd	
+		| {ict_do} ict_do
 		| {ict_do_else}	ict_do_else
 		| {iteration_cmd} iteration_cmd
 		| {bloco} bloco;
 		
-	cmd_no_short_ict = {cmd_sem_coisa} cmd_sem_coisa 
+	cmd_no_short_ict = {cmd_sem_coisa} cmd_sem_cmd 
 		| {ict_do_else_no_if}	ict_do_else_no_short_ict
 		| {iteration_cmd_no_if}	iteration_cmd_no_short_ict
 		| {bloco} bloco;	
 		
-	cmd_sem_coisa = {att_cmd}	att_cmd
-		| {func_cmd}	func_cmd;
+	cmd_sem_cmd = {att_cmd}	att_cmd
+		| {func_cmd} func_cmd;
 		
 	ict_do = in_case_that l_par exp r_par do cmd;
 	
 	ict_do_else = in_case_that l_par exp r_par do cmd_no_short_ict else cmd;
 	
 	ict_do_else_no_short_ict = in_case_that l_par exp r_par do [cmd1]:cmd_no_short_ict else [cmd2]:cmd_no_short_ict;
-	
 	
 	att_cmd = {var} var att exp p_v
 		| {const} const var att_const exp p_v;
@@ -160,8 +152,10 @@ Productions
 	iteration_cmd_no_short_ict = {as_long_as} as_long_as l_par exp r_par do cmd_no_short_ict
 		| {considering} considering var from [ini]:exp to [fim]:exp by [inc]:exp do cmd_no_short_ict;
 					
+	var_comma = var comma;
 	
-			
+	exp_comma = exp comma;
+		
 	exp = or_op;
 	
 	or_op = {and_op} and_op
@@ -199,7 +193,3 @@ Productions
   		| {var} var
   		| {par} l_par exp r_par;
 		
-
-	
-		
-
