@@ -103,449 +103,215 @@ Productions
 
     id_comma {-> P.id_comma  } = id comma {-> New id_comma (id , comma  )  };
 
-    tipo_base {-> P.tipo_base  } =
+    tipo_base {-> P.tipo_base  } = {symbol} symbol {-> New tipo_base.symbol (symbol  )  }   |
+		{real} real {-> New tipo_base.real (real  )  }   |
+		{integer} integer {-> New tipo_base.integer (integer  )  };
 
-     {symbol} symbol 
-         {-> New tipo_base.symbol (symbol  )  }   |
+    tipo {-> P.tipo  } = {simples} tipo_base {-> New tipo.simples (tipo_base  )  }   |
+		{composto} tipo_base vector [d1]:tipo_vec [nd]:tipo_vec* {-> New tipo.composto (tipo_base , vector , d1, [nd])  };
 
-     {real} real 
-         {-> New tipo_base.real (real  )  }   |
+    tipo_vec {-> P.tipo_vec  } = l_colch int_val r_colch {-> New tipo_vec (l_colch , int_val , r_colch  )  };
 
-     {integer} integer 
-         {-> New tipo_base.integer (integer  )  }  
-     ;
+    var {-> P.var  } = {avar} id var_vec*  {-> New var (id , [ var_vec ] )  };
 
-    tipo
-         {-> P.tipo  } =
+    var_vec {-> P.var_vec  } = {var_vec} l_colch int_val r_colch {-> New var_vec.var_vec (l_colch , int_val , r_colch  )  };
 
-     {simples} tipo_base 
-         {-> New tipo.simples (tipo_base  )  }   |
+    valor {-> P.valor  } = {sym} sym_val {-> New valor.sym (sym_val  )  }   |
+		{real} real_val{-> New valor.real (real_val  )  }   |
+		{int} int_val {-> New valor.int (int_val  )  }   |
+		{string} sym_vec_val {-> New valor.string (sym_vec_val  )  };
 
-     {composto} tipo_base vector [d1]:tipo_vec [nd]:tipo_vec* 
-         {-> New tipo.composto (tipo_base , vector , d1, [nd])  }  
-     ;
+    cmd {-> P.cmd  } = {cmd_sem_coisa} cmd_sem_cmd {-> New cmd.cmd_sem_coisa (cmd_sem_cmd  )  }   |
+		{ict_do} ict_do {-> New cmd.ict_do (ict_do  )  }   |
+		{ict_do_else} ict_do_else {-> New cmd.ict_do_else (ict_do_else  )  }   |
+		{iteration_cmd} iteration_cmd {-> New cmd.iteration_cmd (iteration_cmd  )  }   |
+		{bloco} bloco {-> New cmd.bloco (bloco  )  };
 
-    tipo_vec
-         {-> P.tipo_vec  } =
+    cmd_no_short_ict {-> P.cmd_no_short_ict  } = {cmd_sem_coisa} cmd_sem_cmd {-> New cmd_no_short_ict.cmd_sem_coisa (cmd_sem_cmd  )  }   |
+		{ict_do_else_no_if} ict_do_else_no_short_ict {-> New cmd_no_short_ict.ict_do_else_no_if (ict_do_else_no_short_ict  )  }   |
+		{iteration_cmd_no_if} iteration_cmd_no_short_ict {-> New cmd_no_short_ict.iteration_cmd_no_if (iteration_cmd_no_short_ict  )  }   |
+		{bloco} bloco {-> New cmd_no_short_ict.bloco (bloco  )  };
 
-     l_colch int_val r_colch 
-         {-> New tipo_vec (l_colch , int_val , r_colch  )  }  
-     ;
+    cmd_sem_cmd {-> P.cmd_sem_cmd  } = {att_cmd} att_cmd {-> New cmd_sem_cmd.att_cmd (att_cmd  )  }   |
+		{func_cmd} func_cmd {-> New cmd_sem_cmd.func_cmd (func_cmd  )  };
 
-    var
-         {-> P.var  } =
+    ict_do {-> P.ict_do  } = in_case_that l_par exp r_par do cmd {-> New ict_do (in_case_that , l_par , exp , r_par , do , cmd  )  };
 
-     {avar} id var_vec*
-         {-> New var (id , [ var_vec ] )  };
+    ict_do_else {-> P.ict_do_else  } =	in_case_that l_par exp r_par do cmd_no_short_ict else cmd {-> New ict_do_else (in_case_that , l_par , exp , r_par , do , cmd_no_short_ict , else , cmd  )  };
 
-    var_vec
-         {-> P.var_vec  } =
+    ict_do_else_no_short_ict {-> P.ict_do_else_no_short_ict  } = in_case_that l_par exp r_par do [cmd1]: cmd_no_short_ict else [cmd2]: cmd_no_short_ict {-> New ict_do_else_no_short_ict (in_case_that , l_par , exp , r_par , do , cmd1 , else , cmd2  )  };
 
-     {var_vec} l_colch int_val r_colch 
-         {-> New var_vec.var_vec (l_colch , int_val , r_colch  )  }  
-     ;
+    att_cmd {-> P.att_cmd  } = {var} var att exp p_v {-> New att_cmd.var (var , att , exp , p_v  )  }   |
+		{const} const var att_const exp p_v {-> New att_cmd.const (const , var , att_const , exp , p_v  )  };
 
-    valor
-         {-> P.valor  } =
+    func_cmd {-> P.func_cmd  } = {acapturefunccmd} capture l_par var_comma* var r_par p_v {-> New func_cmd.capture (capture , l_par , [ var_comma  ], var , r_par , p_v  )  }   |
+		{ashowfunccmd} show l_par exp_comma* exp r_par p_v {-> New func_cmd.show (show , l_par , [ exp_comma], exp , r_par , p_v  )  };
 
-     {sym} sym_val 
-         {-> New valor.sym (sym_val  )  }   |
+    iteration_cmd {-> P.iteration_cmd  } = {as_long_as} as_long_as l_par exp r_par do cmd {-> New iteration_cmd.as_long_as (as_long_as , l_par , exp , r_par , do , cmd  )  }   |
+		{considering} considering var from [ini]: exp to [fim]: exp by [inc]: exp do cmd {-> New iteration_cmd.considering (considering , var , from , ini , to , fim , by , inc , do , cmd  )  };
 
-     {real} real_val 
-         {-> New valor.real (real_val  )  }   |
+    iteration_cmd_no_short_ict {-> P.iteration_cmd_no_short_ict  } = {as_long_as} as_long_as l_par exp r_par do cmd_no_short_ict {-> New iteration_cmd_no_short_ict.as_long_as (as_long_as , l_par , exp , r_par , do , cmd_no_short_ict  )  }   |
+		{considering} considering var from [ini]: exp to [fim]: exp by [inc]: exp do cmd_no_short_ict {-> New iteration_cmd_no_short_ict.considering (considering , var , from , ini , to , fim , by , inc , do , cmd_no_short_ict  )  };
 
-     {int} int_val 
-         {-> New valor.int (int_val  )  }   |
+    var_comma {-> P.var_comma  } = var comma {-> New var_comma (var , comma  )  };
 
-     {string} sym_vec_val 
-         {-> New valor.string (sym_vec_val  )  }  
-     ;
+    exp_comma {-> P.exp_comma  } = exp comma {-> New exp_comma (exp , comma  )  };
 
-    cmd
-         {-> P.cmd  } =
+    exp {-> P.exp  } = or_op {-> New exp (or_op  )  };
 
-     {cmd_sem_coisa} cmd_sem_cmd 
-         {-> New cmd.cmd_sem_coisa (cmd_sem_cmd  )  }   |
+    or_op {-> P.or_op  } = {and_op} and_op {-> New or_op.and_op (and_op  )  }   |
+		{or} or_op or and_op {-> New or_op.or (or_op , or , and_op  )  };
 
-     {ict_do} ict_do 
-         {-> New cmd.ict_do (ict_do  )  }   |
+    and_op {-> P.and_op  } = {xor_op} xor_op {-> New and_op.xor_op (xor_op  )  }   |
+		{and} and_op and xor_op {-> New and_op.and (and_op , and , xor_op  )  };
 
-     {ict_do_else} ict_do_else 
-         {-> New cmd.ict_do_else (ict_do_else  )  }   |
+    xor_op {-> P.xor_op  } = {eq_op} eq_op {-> New xor_op.eq_op (eq_op  )  }   |
+		{xor} xor_op xor eq_op {-> New xor_op.xor (xor_op , xor , eq_op  )  };
 
-     {iteration_cmd} iteration_cmd 
-         {-> New cmd.iteration_cmd (iteration_cmd  )  }   |
+    eq_op {-> P.eq_op  } = {rel_op} rel_op {-> New eq_op.rel_op (rel_op  )  }   |
+		{igual} eq_op igual rel_op {-> New eq_op.igual (eq_op , igual , rel_op  )  }   |
+		{diff} eq_op diff rel_op {-> New eq_op.diff (eq_op , diff , rel_op  )  };
 
-     {bloco} bloco 
-         {-> New cmd.bloco (bloco  )  }  
-     ;
+    rel_op {-> P.rel_op  } = {op} op {-> New rel_op.op (op  )  }   |
+		{maior} rel_op maior op {-> New rel_op.maior (rel_op , maior , op  )  }   |
+		{menor} rel_op menor op {-> New rel_op.menor (rel_op , menor , op  )  }   |
+		{maior_i} rel_op maior_i op {-> New rel_op.maior_i (rel_op , maior_i , op  )  }   |
+		{menor_i} rel_op menor_i op {-> New rel_op.menor_i (rel_op , menor_i , op  )  };
 
-    cmd_no_short_ict
-         {-> P.cmd_no_short_ict  } =
+    op {-> P.op  } = {fator} fator {-> New op.fator (fator  )  }   |
+		{sum} op plus fator {-> New op.sum (op , plus , fator  )  }   |
+		{minus} op minus fator {-> New op.minus (op , minus , fator  )  };
 
-     {cmd_sem_coisa} cmd_sem_cmd 
-         {-> New cmd_no_short_ict.cmd_sem_coisa (cmd_sem_cmd  )  }   |
+    fator {-> P.fator  } = {termo} termo {-> New fator.termo (termo  )  }   |
+		{mult} fator mult termo {-> New fator.mult (fator , mult , termo  )  }   |
+		{div} fator div termo {-> New fator.div (fator , div , termo  )  }   |
+		{mod} fator mod termo {-> New fator.mod (fator , mod , termo  )  }   |
+		{min_un} minus termo {-> New fator.min_un (minus , termo  )  }   |
+		{not} not termo {-> New fator.not (not , termo  )  };
 
-     {ict_do_else_no_if} ict_do_else_no_short_ict 
-         {-> New cmd_no_short_ict.ict_do_else_no_if (ict_do_else_no_short_ict  )  }   |
-
-     {iteration_cmd_no_if} iteration_cmd_no_short_ict 
-         {-> New cmd_no_short_ict.iteration_cmd_no_if (iteration_cmd_no_short_ict  )  }   |
-
-     {bloco} bloco 
-         {-> New cmd_no_short_ict.bloco (bloco  )  }  
-     ;
-
-    cmd_sem_cmd
-         {-> P.cmd_sem_cmd  } =
-
-     {att_cmd} att_cmd 
-         {-> New cmd_sem_cmd.att_cmd (att_cmd  )  }   |
-
-     {func_cmd} func_cmd 
-         {-> New cmd_sem_cmd.func_cmd (func_cmd  )  }  
-     ;
-
-    ict_do
-         {-> P.ict_do  } =
-
-     in_case_that l_par exp r_par do cmd 
-         {-> New ict_do (in_case_that , l_par , exp , r_par , do , cmd  )  }  
-     ;
-
-    ict_do_else
-         {-> P.ict_do_else  } =
-
-     in_case_that l_par exp r_par do cmd_no_short_ict else cmd 
-         {-> New ict_do_else (in_case_that , l_par , exp , r_par , do , cmd_no_short_ict , else , cmd  )  }  
-     ;
-
-    ict_do_else_no_short_ict
-         {-> P.ict_do_else_no_short_ict  } =
-
-     in_case_that l_par exp r_par do [cmd1]: cmd_no_short_ict else [cmd2]: cmd_no_short_ict 
-         {-> New ict_do_else_no_short_ict (in_case_that , l_par , exp , r_par , do , cmd1 , else , cmd2  )  }  
-     ;
-
-    att_cmd
-         {-> P.att_cmd  } =
-
-     {var} var att exp p_v 
-         {-> New att_cmd.var (var , att , exp , p_v  )  }   |
-
-     {const} const var att_const exp p_v 
-         {-> New att_cmd.const (const , var , att_const , exp , p_v  )  }  
-     ;
-
-    func_cmd
-         {-> P.func_cmd  } =
-
-     {acapturefunccmd} capture l_par var_comma* var r_par p_v 
-         {-> New func_cmd.capture (capture , l_par , [ var_comma  ], var , r_par , p_v  )  }   |
-
-     {ashowfunccmd} show l_par exp_comma* exp r_par p_v 
-         {-> New func_cmd.show (show , l_par , [ exp_comma], exp , r_par , p_v  )  }  
-     ;
-
-    iteration_cmd
-         {-> P.iteration_cmd  } =
-
-     {as_long_as} as_long_as l_par exp r_par do cmd 
-         {-> New iteration_cmd.as_long_as (as_long_as , l_par , exp , r_par , do , cmd  )  }   |
-
-     {considering} considering var from [ini]: exp to [fim]: exp by [inc]: exp do cmd 
-         {-> New iteration_cmd.considering (considering , var , from , ini , to , fim , by , inc , do , cmd  )  }  
-     ;
-
-    iteration_cmd_no_short_ict
-         {-> P.iteration_cmd_no_short_ict  } =
-
-     {as_long_as} as_long_as l_par exp r_par do cmd_no_short_ict 
-         {-> New iteration_cmd_no_short_ict.as_long_as (as_long_as , l_par , exp , r_par , do , cmd_no_short_ict  )  }   |
-
-     {considering} considering var from [ini]: exp to [fim]: exp by [inc]: exp do cmd_no_short_ict 
-         {-> New iteration_cmd_no_short_ict.considering (considering , var , from , ini , to , fim , by , inc , do , cmd_no_short_ict  )  }  
-     ;
-
-    var_comma
-         {-> P.var_comma  } =
-
-     var comma 
-         {-> New var_comma (var , comma  )  }  
-     ;
-
-    exp_comma
-         {-> P.exp_comma  } =
-
-     exp comma 
-         {-> New exp_comma (exp , comma  )  }  
-     ;
-
-    exp
-         {-> P.exp  } =
-
-     or_op 
-         {-> New exp (or_op  )  }  
-     ;
-
-    or_op
-         {-> P.or_op  } =
-
-     {and_op} and_op 
-         {-> New or_op.and_op (and_op  )  }   |
-
-     {or} or_op or and_op 
-         {-> New or_op.or (or_op , or , and_op  )  }  
-     ;
-
-    and_op
-         {-> P.and_op  } =
-
-     {xor_op} xor_op 
-         {-> New and_op.xor_op (xor_op  )  }   |
-
-     {and} and_op and xor_op 
-         {-> New and_op.and (and_op , and , xor_op  )  }  
-     ;
-
-    xor_op
-         {-> P.xor_op  } =
-
-     {eq_op} eq_op 
-         {-> New xor_op.eq_op (eq_op  )  }   |
-
-     {xor} xor_op xor eq_op 
-         {-> New xor_op.xor (xor_op , xor , eq_op  )  }  
-     ;
-
-    eq_op
-         {-> P.eq_op  } =
-
-     {rel_op} rel_op 
-         {-> New eq_op.rel_op (rel_op  )  }   |
-
-     {igual} eq_op igual rel_op 
-         {-> New eq_op.igual (eq_op , igual , rel_op  )  }   |
-
-     {diff} eq_op diff rel_op 
-         {-> New eq_op.diff (eq_op , diff , rel_op  )  }  
-     ;
-
-    rel_op
-         {-> P.rel_op  } =
-
-     {op} op 
-         {-> New rel_op.op (op  )  }   |
-
-     {maior} rel_op maior op 
-         {-> New rel_op.maior (rel_op , maior , op  )  }   |
-
-     {menor} rel_op menor op 
-         {-> New rel_op.menor (rel_op , menor , op  )  }   |
-
-     {maior_i} rel_op maior_i op 
-         {-> New rel_op.maior_i (rel_op , maior_i , op  )  }   |
-
-     {menor_i} rel_op menor_i op 
-         {-> New rel_op.menor_i (rel_op , menor_i , op  )  }  
-     ;
-
-    op
-         {-> P.op  } =
-
-     {fator} fator 
-         {-> New op.fator (fator  )  }   |
-
-     {sum} op plus fator 
-         {-> New op.sum (op , plus , fator  )  }   |
-
-     {minus} op minus fator 
-         {-> New op.minus (op , minus , fator  )  }  
-     ;
-
-    fator
-         {-> P.fator  } =
-
-     {termo} termo 
-         {-> New fator.termo (termo  )  }   |
-
-     {mult} fator mult termo 
-         {-> New fator.mult (fator , mult , termo  )  }   |
-
-     {div} fator div termo 
-         {-> New fator.div (fator , div , termo  )  }   |
-
-     {mod} fator mod termo 
-         {-> New fator.mod (fator , mod , termo  )  }   |
-
-     {min_un} minus termo 
-         {-> New fator.min_un (minus , termo  )  }   |
-
-     {not} not termo 
-         {-> New fator.not (not , termo  )  }  
-     ;
-
-    termo
-         {-> P.termo  } =
-
-     {valor} valor 
-         {-> New termo.valor (valor  )  }   |
-
-     {var} var 
-         {-> New termo.var (var  )  }   |
-
-     {par} l_par exp r_par 
-         {-> New termo.par (l_par , exp , r_par  )  }  
-     ;
+    termo {-> P.termo  } = {valor} valor {-> New termo.valor (valor  )  }   |
+		{var} var {-> New termo.var (var  )  }   |
+		{par} l_par exp r_par {-> New termo.par (l_par , exp , r_par  )  };
 
     
     
 Abstract Syntax Tree
     programa =
-     code id bloco 
-     ;
+     code id bloco;
 
     bloco =
-     start declaracao* cmd* finish 
-     ;
+     start declaracao* cmd* finish;
 
     declaracao =
      {var} tipo id_comma* id p_v | 
      {constante} const tipo id p_v | 
-     {const_att} const tipo id att_const valor p_v 
-     ;
+     {const_att} const tipo id att_const valor p_v;
 
     id_comma =
-     id comma 
-     ;
+     id comma;
 
     tipo_base =
      {symbol} symbol | 
      {real} real | 
-     {integer} integer 
-     ;
+     {integer} integer;
 
     tipo =
      {simples} tipo_base | 
-     {composto} tipo_base vector [d1]:tipo_vec [nd]:tipo_vec+ 
-     ;
+     {composto} tipo_base vector [d1]:tipo_vec [nd]:tipo_vec+;
 
     tipo_vec =
-     l_colch int_val r_colch 
-     ;
+     l_colch int_val r_colch;
 
     var =
-     id var_vec* 
-     ;
+     id var_vec*;
 
     var_vec =
-     {var_vec} l_colch int_val r_colch 
-     ;
+     {var_vec} l_colch int_val r_colch;
 
     valor =
      {sym} sym_val | 
      {real} real_val | 
      {int} int_val | 
-     {string} sym_vec_val 
-     ;
+     {string} sym_vec_val;
 
     cmd =
      {cmd_sem_coisa} cmd_sem_cmd | 
      {ict_do} ict_do | 
      {ict_do_else} ict_do_else | 
      {iteration_cmd} iteration_cmd | 
-     {bloco} bloco 
-     ;
+     {bloco} bloco;
 
     cmd_no_short_ict =
      {cmd_sem_coisa} cmd_sem_cmd | 
      {ict_do_else_no_if} ict_do_else_no_short_ict | 
      {iteration_cmd_no_if} iteration_cmd_no_short_ict | 
-     {bloco} bloco 
-     ;
+     {bloco} bloco;
 
     cmd_sem_cmd =
      {att_cmd} att_cmd | 
-     {func_cmd} func_cmd 
-     ;
+     {func_cmd} func_cmd;
 
     ict_do =
-     in_case_that l_par exp r_par do cmd 
-     ;
+     in_case_that l_par exp r_par do cmd;
 
     ict_do_else =
-     in_case_that l_par exp r_par do cmd_no_short_ict else cmd 
-     ;
+     in_case_that l_par exp r_par do cmd_no_short_ict else cmd;
     ict_do_else_no_short_ict =
-     in_case_that l_par exp r_par do [cmd1]: cmd_no_short_ict else [cmd2]: cmd_no_short_ict 
-     ;
+     in_case_that l_par exp r_par do [cmd1]: cmd_no_short_ict else [cmd2]: cmd_no_short_ict;
 
     att_cmd =
      {var} var att exp p_v | 
-     {const} const var att_const exp p_v 
-     ;
+     {const} const var att_const exp p_v;
 
     func_cmd =
      {capture} capture l_par var_comma* var r_par p_v | 
-     {show} show l_par exp_comma* exp r_par p_v 
-     ;
+     {show} show l_par exp_comma* exp r_par p_v;
 
     iteration_cmd =
      {as_long_as} as_long_as l_par exp r_par do cmd | 
-     {considering} considering var from [ini]: exp to [fim]: exp by [inc]: exp do cmd 
-     ;
+     {considering} considering var from [ini]: exp to [fim]: exp by [inc]: exp do cmd;
 
     iteration_cmd_no_short_ict =
      {as_long_as} as_long_as l_par exp r_par do cmd_no_short_ict | 
-     {considering} considering var from [ini]: exp to [fim]: exp by [inc]: exp do cmd_no_short_ict 
-     ;
+     {considering} considering var from [ini]: exp to [fim]: exp by [inc]: exp do cmd_no_short_ict;
 
     var_comma =
-     var comma 
-     ;
+     var comma;
 
     exp_comma =
-     exp comma 
-     ;
+     exp comma;
 
     exp =
-     or_op 
-     ;
+     or_op;
 
     or_op =
      {and_op} and_op | 
-     {or} or_op or and_op 
-     ;
+     {or} or_op or and_op;
 
     and_op =
      {xor_op} xor_op | 
-     {and} and_op and xor_op 
-     ;
+     {and} and_op and xor_op;
 
     xor_op =
      {eq_op} eq_op | 
-     {xor} xor_op xor eq_op 
-     ;
+     {xor} xor_op xor eq_op;
 
     eq_op =
      {rel_op} rel_op | 
      {igual} eq_op igual rel_op | 
-     {diff} eq_op diff rel_op 
-     ;
+     {diff} eq_op diff rel_op;
 
     rel_op =
      {op} op | 
      {maior} rel_op maior op | 
      {menor} rel_op menor op | 
      {maior_i} rel_op maior_i op | 
-     {menor_i} rel_op menor_i op 
-     ;
+     {menor_i} rel_op menor_i op;
 
     op =
      {fator} fator | 
      {sum} op plus fator | 
-     {minus} op minus fator 
-     ;
+     {minus} op minus fator;
 
     fator =
      {termo} termo | 
@@ -553,12 +319,10 @@ Abstract Syntax Tree
      {div} fator div termo | 
      {mod} fator mod termo | 
      {min_un} minus termo | 
-     {not} not termo 
-     ;
+     {not} not termo;
 
     termo =
      {valor} valor | 
      {var} var | 
-     {par} l_par exp r_par 
-     ;
+     {par} l_par exp r_par;
 		
