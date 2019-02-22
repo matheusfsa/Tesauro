@@ -99,27 +99,22 @@ Productions
 
     declaracao {-> P.declaracao  } = {avardeclaracao1} tipo id_comma* id p_v {-> New declaracao.var (tipo, [id_comma], id , p_v  )  }   |
      	{constante} const tipo id p_v {-> New declaracao.constante (const , tipo , id , p_v  )  }   |
-		{const_att} const tipo id att_const valor p_v {-> New declaracao.const_att (const , tipo , id , att_const , valor , p_v  )  };
+		{const_att} const tipo id att_const valor p_v {-> New declaracao.const_att (const , tipo , id , att_const , valor.exp , p_v  )  };
 
-    id_comma {-> P.id_comma  } = id comma {-> New id_comma (id , comma  )  };
+    id_comma {-> P.id_comma } = id comma{-> New id_comma.id(id)  };
 
     tipo_base {-> P.tipo_base  } = {symbol} symbol {-> New tipo_base.symbol (symbol  )  }   |
 		{real} real {-> New tipo_base.real (real  )  }   |
 		{integer} integer {-> New tipo_base.integer (integer  )  };
 
     tipo {-> P.tipo  } = {simples} tipo_base {-> New tipo.simples (tipo_base  )  }   |
-		{composto} tipo_base vector [d1]:tipo_vec [nd]:tipo_vec* {-> New tipo.composto (tipo_base , vector , d1, [nd])  };
+		{composto} tipo_base vector tipo_vec+{-> New tipo.composto (tipo_base , vector , [tipo_vec.exp])  };
 
-    tipo_vec {-> P.tipo_vec  } = l_colch int_val r_colch {-> New tipo_vec (l_colch , int_val , r_colch  )  };
+    tipo_vec {-> P.exp  } = l_colch valor r_colch {-> valor.exp  };
 
-    var {-> P.var  } = {avar} id var_vec*  {-> New var (id , [ var_vec ] )  };
+    var {-> P.exp  } = {avar} id var_vec*  {-> New exp.var (id , [ var_vec ] )  };
 
     var_vec {-> P.var_vec  } = {var_vec} l_colch int_val r_colch {-> New var_vec.var_vec (l_colch , int_val , r_colch  )  };
-
-    valor {-> P.valor  } = {sym} sym_val {-> New valor.sym (sym_val  )  }   |
-		{real} real_val{-> New valor.real (real_val  )  }   |
-		{int} int_val {-> New valor.int (int_val  )  }   |
-		{string} sym_vec_val {-> New valor.string (sym_vec_val  )  };
 
     cmd {-> P.cmd  } = {cmd_sem_coisa} cmd_sem_cmd {-> New cmd.cmd_sem_coisa (cmd_sem_cmd  )  }   |
 		{ict_do} ict_do {-> New cmd.ict_do (ict_do  )  }   |
@@ -141,61 +136,68 @@ Productions
 
     ict_do_else_no_short_ict {-> P.ict_do_else_no_short_ict  } = in_case_that l_par exp r_par do [cmd1]: cmd_no_short_ict else [cmd2]: cmd_no_short_ict {-> New ict_do_else_no_short_ict (in_case_that , l_par , exp , r_par , do , cmd1 , else , cmd2  )  };
 
-    att_cmd {-> P.att_cmd  } = {var} var att exp p_v {-> New att_cmd.var (var , att , exp , p_v  )  }   |
-		{const} const var att_const exp p_v {-> New att_cmd.const (const , var , att_const , exp , p_v  )  };
+    att_cmd {-> P.att_cmd  } = {var} var att exp p_v {-> New att_cmd.var (var.exp , att , exp , p_v  )  }   |
+		{const} const var att_const exp p_v {-> New att_cmd.const (const , var.exp , att_const , exp , p_v  )  };
 
-    func_cmd {-> P.func_cmd  } = {acapturefunccmd} capture l_par var_comma* var r_par p_v {-> New func_cmd.capture (capture , l_par , [ var_comma  ], var , r_par , p_v  )  }   |
-		{ashowfunccmd} show l_par exp_comma* exp r_par p_v {-> New func_cmd.show (show , l_par , [ exp_comma], exp , r_par , p_v  )  };
+    func_cmd {-> P.func_cmd  } = {acapturefunccmd} capture l_par var_comma* var r_par p_v {-> New func_cmd.capture (capture , l_par , [ var_comma.exp ], var.exp , r_par , p_v  )  }   |
+		{ashowfunccmd} show l_par exp_comma* exp r_par p_v {-> New func_cmd.show (show , l_par , [ exp_comma.exp], exp , r_par , p_v  )  };
 
     iteration_cmd {-> P.iteration_cmd  } = {as_long_as} as_long_as l_par exp r_par do cmd {-> New iteration_cmd.as_long_as (as_long_as , l_par , exp , r_par , do , cmd  )  }   |
-		{considering} considering var from [ini]: exp to [fim]: exp by [inc]: exp do cmd {-> New iteration_cmd.considering (considering , var , from , ini , to , fim , by , inc , do , cmd  )  };
+		{considering} considering var from [ini]: exp to [fim]: exp by [inc]: exp do cmd {-> New iteration_cmd.considering (considering , var.exp , from , ini , to , fim , by , inc , do , cmd  )  };
 
     iteration_cmd_no_short_ict {-> P.iteration_cmd_no_short_ict  } = {as_long_as} as_long_as l_par exp r_par do cmd_no_short_ict {-> New iteration_cmd_no_short_ict.as_long_as (as_long_as , l_par , exp , r_par , do , cmd_no_short_ict  )  }   |
-		{considering} considering var from [ini]: exp to [fim]: exp by [inc]: exp do cmd_no_short_ict {-> New iteration_cmd_no_short_ict.considering (considering , var , from , ini , to , fim , by , inc , do , cmd_no_short_ict  )  };
+		{considering} considering var from [ini]: exp to [fim]: exp by [inc]: exp do cmd_no_short_ict {-> New iteration_cmd_no_short_ict.considering (considering , var.exp , from , ini , to , fim , by , inc , do , cmd_no_short_ict  )  };
 
-    var_comma {-> P.var_comma  } = var comma {-> New var_comma (var , comma  )  };
+    var_comma {-> P.exp  } = var comma {-> var.exp  };
 
-    exp_comma {-> P.exp_comma  } = exp comma {-> New exp_comma (exp , comma  )  };
+    exp_comma {-> P.exp  } = exp comma {-> exp.exp  };
 
-    exp {-> P.exp  } = or_op {-> New exp (or_op  )  };
+    exp {-> P.exp  } = {or_op} or_op {-> or_op.exp };
 
-    or_op {-> P.or_op  } = {and_op} and_op {-> New or_op.and_op (and_op  )  }   |
-		{or} or_op or and_op {-> New or_op.or (or_op , or , and_op  )  };
+    or_op {-> P.exp  } = {and_op} and_op {-> and_op.exp }   |
+		{or} [left]:or_op or [right]:and_op {-> New exp.or(left.exp, right.exp)  };
 
-    and_op {-> P.and_op  } = {xor_op} xor_op {-> New and_op.xor_op (xor_op  )  }   |
-		{and} and_op and xor_op {-> New and_op.and (and_op , and , xor_op  )  };
+    and_op {-> P.exp  } = {xor_op} xor_op {-> xor_op.exp  }   |
+		{and} [left]:and_op and [right]:xor_op {-> New exp.and(left.exp, right.exp)  };
 
-    xor_op {-> P.xor_op  } = {eq_op} eq_op {-> New xor_op.eq_op (eq_op  )  }   |
-		{xor} xor_op xor eq_op {-> New xor_op.xor (xor_op , xor , eq_op  )  };
+    xor_op {-> P.exp  } = {eq_op} eq_op {-> eq_op.exp  }   |
+		{xor} [left]:xor_op xor [right]:eq_op {-> New exp.xor(left.exp , right.exp)  };
 
-    eq_op {-> P.eq_op  } = {rel_op} rel_op {-> New eq_op.rel_op (rel_op  )  }   |
-		{igual} eq_op igual rel_op {-> New eq_op.igual (eq_op , igual , rel_op  )  }   |
-		{diff} eq_op diff rel_op {-> New eq_op.diff (eq_op , diff , rel_op  )  };
+    eq_op {-> P.exp  } = {rel_op} rel_op {-> rel_op.exp }   |
+		{igual} [left]:eq_op igual [right]:rel_op {-> New exp.igual(left.exp, right.exp)  }   |
+		{diff} [left]:eq_op diff [right]:rel_op {-> New exp.diff(left.exp, right.exp)  };
 
-    rel_op {-> P.rel_op  } = {op} op {-> New rel_op.op (op  )  }   |
-		{maior} rel_op maior op {-> New rel_op.maior (rel_op , maior , op  )  }   |
-		{menor} rel_op menor op {-> New rel_op.menor (rel_op , menor , op  )  }   |
-		{maior_i} rel_op maior_i op {-> New rel_op.maior_i (rel_op , maior_i , op  )  }   |
-		{menor_i} rel_op menor_i op {-> New rel_op.menor_i (rel_op , menor_i , op  )  };
+    rel_op {-> P.exp  } = {op} op {-> op.exp }   |
+		{maior} [left]:rel_op maior [right]:op {-> New exp.maior(left.exp, right.exp)  }   |
+		{menor} [left]:rel_op menor [right]:op {-> New exp.menor(left.exp, right.exp)  }   |
+		{maior_i} [left]:rel_op maior_i [right]:op {-> New exp.maior_i(left.exp, right.exp)  }   |
+		{menor_i} [left]:rel_op menor_i [right]:op {-> New exp.menor_i(left.exp, right.exp)  };
 
-    op {-> P.op  } = {fator} fator {-> New op.fator (fator  )  }   |
-		{sum} op plus fator {-> New op.sum (op , plus , fator  )  }   |
-		{minus} op minus fator {-> New op.minus (op , minus , fator  )  };
+    op {-> P.exp  } = {fator} fator {-> fator.exp }   |
+		{sum} [left]:op plus [right]:fator {-> New exp.sum(left.exp, right.exp)  }   |
+		{minus} [left]:op minus [right]:fator {-> New exp.minus(left.exp, right.exp)  };
 
-    fator {-> P.fator  } = {termo} termo {-> New fator.termo (termo  )  }   |
-		{mult} fator mult termo {-> New fator.mult (fator , mult , termo  )  }   |
-		{div} fator div termo {-> New fator.div (fator , div , termo  )  }   |
-		{mod} fator mod termo {-> New fator.mod (fator , mod , termo  )  }   |
-		{min_un} minus termo {-> New fator.min_un (minus , termo  )  }   |
-		{not} not termo {-> New fator.not (not , termo  )  };
+    fator {-> P.exp  } = {termo} termo {-> termo.exp }   |
+		{mult} [left]:fator mult [right]:termo {-> New exp.mult(left.exp, right.exp)  }   |
+		{div} [left]:fator div [right]:termo {-> New exp.div(left.exp, right.exp)  }   |
+		{mod} [left]:fator mod [right]:termo {-> New exp.mod(left.exp, right.exp)  }   |
+		{min_un} minus termo {-> New exp.min_un(termo.exp)  }   |
+		{not} not termo {-> New exp.not(termo.exp)  };
 
-    termo {-> P.termo  } = {valor} valor {-> New termo.valor (valor  )  }   |
-		{var} var {-> New termo.var (var  )  }   |
-		{par} l_par exp r_par {-> New termo.par (l_par , exp , r_par  )  };
+    termo {-> P.exp  } = {valor} valor {-> valor.exp }   |
+		{var} var {-> var.exp  }   |
+		{par} l_par exp r_par {-> exp.exp };
 
+    valor {-> P.exp  } = {sym} sym_val {-> New exp.sym_val(sym_val)}   |
+        {real} real_val{-> New exp.real_val(real_val)}   |
+        {int} int_val {-> New exp.int_val(int_val)  }   |
+        {string} sym_vec_val {-> New exp.sym_vec_val(sym_vec_val)  };
     
     
 Abstract Syntax Tree
+
+
+
     programa =
      code id bloco;
 
@@ -205,10 +207,10 @@ Abstract Syntax Tree
     declaracao =
      {var} tipo id_comma* id p_v | 
      {constante} const tipo id p_v | 
-     {const_att} const tipo id att_const valor p_v;
+     {const_att} const tipo id att_const exp p_v;
 
-    id_comma =
-     id comma;
+    id_comma=
+     {id} id;
 
     tipo_base =
      {symbol} symbol | 
@@ -217,13 +219,7 @@ Abstract Syntax Tree
 
     tipo =
      {simples} tipo_base | 
-     {composto} tipo_base vector [d1]:tipo_vec [nd]:tipo_vec+;
-
-    tipo_vec =
-     l_colch int_val r_colch;
-
-    var =
-     id var_vec*;
+     {composto} tipo_base vector [vec]:exp*;
 
     var_vec =
      {var_vec} l_colch int_val r_colch;
@@ -260,69 +256,41 @@ Abstract Syntax Tree
      in_case_that l_par exp r_par do [cmd1]: cmd_no_short_ict else [cmd2]: cmd_no_short_ict;
 
     att_cmd =
-     {var} var att exp p_v | 
-     {const} const var att_const exp p_v;
+     {var} [left]:exp att [right]:exp p_v | 
+     {const} const [left]:exp att_const [right]:exp p_v;
 
     func_cmd =
-     {capture} capture l_par var_comma* var r_par p_v | 
-     {show} show l_par exp_comma* exp r_par p_v;
+     {capture} capture l_par [lista]:exp* exp r_par p_v | 
+     {show} show l_par [lista]:exp* exp r_par p_v;
 
     iteration_cmd =
      {as_long_as} as_long_as l_par exp r_par do cmd | 
-     {considering} considering var from [ini]: exp to [fim]: exp by [inc]: exp do cmd;
+     {considering} considering [left]:exp from [ini]: exp to [fim]: exp by [inc]: exp do cmd;
 
     iteration_cmd_no_short_ict =
      {as_long_as} as_long_as l_par exp r_par do cmd_no_short_ict | 
-     {considering} considering var from [ini]: exp to [fim]: exp by [inc]: exp do cmd_no_short_ict;
-
-    var_comma =
-     var comma;
-
-    exp_comma =
-     exp comma;
-
+     {considering} considering [left]:exp from [ini]: exp to [fim]: exp by [inc]: exp do cmd_no_short_ict;
+     
     exp =
-     or_op;
-
-    or_op =
-     {and_op} and_op | 
-     {or} or_op or and_op;
-
-    and_op =
-     {xor_op} xor_op | 
-     {and} and_op and xor_op;
-
-    xor_op =
-     {eq_op} eq_op | 
-     {xor} xor_op xor eq_op;
-
-    eq_op =
-     {rel_op} rel_op | 
-     {igual} eq_op igual rel_op | 
-     {diff} eq_op diff rel_op;
-
-    rel_op =
-     {op} op | 
-     {maior} rel_op maior op | 
-     {menor} rel_op menor op | 
-     {maior_i} rel_op maior_i op | 
-     {menor_i} rel_op menor_i op;
-
-    op =
-     {fator} fator | 
-     {sum} op plus fator | 
-     {minus} op minus fator;
-
-    fator =
-     {termo} termo | 
-     {mult} fator mult termo | 
-     {div} fator div termo | 
-     {mod} fator mod termo | 
-     {min_un} minus termo | 
-     {not} not termo;
-
-    termo =
-     {valor} valor | 
-     {var} var | 
-     {par} l_par exp r_par;
+        {or} [left]:exp [right]:exp
+        |{and} [left]:exp [right]:exp
+        |{xor} [left]:exp [right]:exp
+        |{igual} [left]:exp [right]:exp
+        |{diff} [left]:exp [right]:exp
+        |{maior} [left]:exp [right]:exp
+        |{menor} [left]:exp [right]:exp
+        |{maior_i} [left]:exp [right]:exp
+        |{menor_i} [left]:exp [right]:exp
+        |{sum} [left]:exp [right]:exp
+        |{minus} [left]:exp [right]:exp
+        |{mult} [left]:exp [right]:exp
+        |{div} [left]:exp [right]:exp
+        |{mod} [left]:exp [right]:exp
+        |{sym_val} sym_val
+        |{real_val} real_val
+        |{int_val} int_val
+        |{sym_vec_val} sym_vec_val
+        |{min_un} exp
+        |{not} exp
+        |{var} id var_vec*;
 		
