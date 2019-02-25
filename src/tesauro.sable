@@ -130,23 +130,23 @@ Productions
     cmd_sem_cmd {-> P.cmd_sem_cmd  } = {att_cmd} att_cmd {-> New cmd_sem_cmd.att_cmd (att_cmd  )  }   |
 		{func_cmd} func_cmd {-> New cmd_sem_cmd.func_cmd (func_cmd  )  };
 
-    ict_do {-> P.ict_do  } = in_case_that l_par exp r_par do cmd {-> New ict_do (in_case_that , l_par , exp , r_par , do , cmd  )  };
+    ict_do {-> P.ict_do  } = in_case_that l_par exp r_par do cmd {-> New ict_do (exp , cmd  )  };
 
-    ict_do_else {-> P.ict_do_else  } =	in_case_that l_par exp r_par do cmd_no_short_ict else cmd {-> New ict_do_else (in_case_that , l_par , exp , r_par , do , cmd_no_short_ict , else , cmd  )  };
+    ict_do_else {-> P.ict_do_else  } =	in_case_that l_par exp r_par do cmd_no_short_ict else cmd {-> New ict_do_else (exp , cmd_no_short_ict ,cmd  )  };
 
-    ict_do_else_no_short_ict {-> P.ict_do_else_no_short_ict  } = in_case_that l_par exp r_par do [cmd1]: cmd_no_short_ict else [cmd2]: cmd_no_short_ict {-> New ict_do_else_no_short_ict (in_case_that , l_par , exp , r_par , do , cmd1 , else , cmd2  )  };
+    ict_do_else_no_short_ict {-> P.ict_do_else_no_short_ict  } = in_case_that l_par exp r_par do [cmd1]: cmd_no_short_ict else [cmd2]: cmd_no_short_ict {-> New ict_do_else_no_short_ict (exp, cmd1 , cmd2  )  };
 
-    att_cmd {-> P.att_cmd  } = {var} var att exp p_v {-> New att_cmd.var (var.exp , att , exp , p_v  )  }   |
-		{const} const var att_const exp p_v {-> New att_cmd.const (const , var.exp , att_const , exp , p_v  )  };
+    att_cmd {-> P.att_cmd  } = {var} var att exp p_v {-> New att_cmd.var (var.exp , exp)  }   |
+		{const} const var att_const exp p_v {-> New att_cmd.const (var.exp, exp)  };
 
-    func_cmd {-> P.func_cmd  } = {acapturefunccmd} capture l_par var_comma* var r_par p_v {-> New func_cmd.capture (capture , l_par , [ var_comma.exp ], var.exp , r_par , p_v  )  }   |
-		{ashowfunccmd} show l_par exp_comma* exp r_par p_v {-> New func_cmd.show (show , l_par , [ exp_comma.exp], exp , r_par , p_v  )  };
+    func_cmd {-> P.func_cmd  } = {acapturefunccmd} capture l_par var_comma* var r_par p_v {-> New func_cmd.capture ([ var_comma.exp ], var.exp)  }   |
+		{ashowfunccmd} show l_par exp_comma* exp r_par p_v {-> New func_cmd.show ([ exp_comma.exp], exp)  };
 
-    iteration_cmd {-> P.iteration_cmd  } = {as_long_as} as_long_as l_par exp r_par do cmd {-> New iteration_cmd.as_long_as (as_long_as , l_par , exp , r_par , do , cmd  )  }   |
-		{considering} considering var from [ini]: exp to [fim]: exp by [inc]: exp do cmd {-> New iteration_cmd.considering (considering , var.exp , from , ini , to , fim , by , inc , do , cmd  )  };
+    iteration_cmd {-> P.iteration_cmd  } = {as_long_as} as_long_as l_par [cond]:exp r_par do [cmd_aa]:cmd {-> New iteration_cmd.as_long_as (cond.exp, cmd_aa.cmd)  }   |
+		{considering} considering [i]:var from [ini]: exp to [fim]: exp by [inc]: exp do [cmd_cons]:cmd {-> New iteration_cmd.considering (i.exp ,  ini.exp, fim.exp, inc.exp , cmd_cons.cmd)  };
 
-    iteration_cmd_no_short_ict {-> P.iteration_cmd_no_short_ict  } = {as_long_as} as_long_as l_par exp r_par do cmd_no_short_ict {-> New iteration_cmd_no_short_ict.as_long_as (as_long_as , l_par , exp , r_par , do , cmd_no_short_ict  )  }   |
-		{considering} considering var from [ini]: exp to [fim]: exp by [inc]: exp do cmd_no_short_ict {-> New iteration_cmd_no_short_ict.considering (considering , var.exp , from , ini , to , fim , by , inc , do , cmd_no_short_ict  )  };
+    iteration_cmd_no_short_ict {-> P.iteration_cmd_no_short_ict  } = {as_long_as} as_long_as l_par [cond]:exp r_par do [cmd_aa]:cmd_no_short_ict {-> New iteration_cmd_no_short_ict.as_long_as (cond.exp, cmd_aa.cmd_no_short_ict  )  }   |
+		{considering} considering [i]:var from [ini]: exp to [fim]: exp by [inc]: exp do [cmd_cons]:cmd_no_short_ict {-> New iteration_cmd_no_short_ict.considering (i.exp , ini.exp , fim.exp , inc.exp , cmd_cons.cmd_no_short_ict  )  };
 
     var_comma {-> P.exp  } = var comma {-> var.exp  };
 
@@ -248,28 +248,28 @@ Abstract Syntax Tree
      {func_cmd} func_cmd;
 
     ict_do =
-     in_case_that l_par exp r_par do cmd;
+     exp cmd;
 
     ict_do_else =
-     in_case_that l_par exp r_par do cmd_no_short_ict else cmd;
+     exp cmd_no_short_ict cmd;
     ict_do_else_no_short_ict =
-     in_case_that l_par exp r_par do [cmd1]: cmd_no_short_ict else [cmd2]: cmd_no_short_ict;
+     exp [cmd1]: cmd_no_short_ict [cmd2]: cmd_no_short_ict;
 
     att_cmd =
-     {var} [left]:exp att [right]:exp p_v | 
-     {const} const [left]:exp att_const [right]:exp p_v;
+     {var} [left]:exp [right]:exp | 
+     {const} [left]:exp [right]:exp;
 
     func_cmd =
-     {capture} capture l_par [lista]:exp* exp r_par p_v | 
-     {show} show l_par [lista]:exp* exp r_par p_v;
+     {capture} [lista]:exp* exp | 
+     {show} [lista]:exp* exp;
 
     iteration_cmd =
-     {as_long_as} as_long_as l_par exp r_par do cmd | 
-     {considering} considering [left]:exp from [ini]: exp to [fim]: exp by [inc]: exp do cmd;
+     {as_long_as} [cond]:exp [cmd_aa]:cmd | 
+     {considering} [i]:exp [ini]: exp [fim]: exp [inc]: exp [cmd_cons]:cmd;
 
     iteration_cmd_no_short_ict =
-     {as_long_as} as_long_as l_par exp r_par do cmd_no_short_ict | 
-     {considering} considering [left]:exp from [ini]: exp to [fim]: exp by [inc]: exp do cmd_no_short_ict;
+     {as_long_as} [cond]:exp [cmd_aa]:cmd_no_short_ict | 
+     {considering} [i]:exp [ini]: exp  [fim]: exp  [inc]: exp [cmd_cons]:cmd_no_short_ict;
      
     exp =
         {or} [left]:exp [right]:exp
