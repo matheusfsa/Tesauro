@@ -1,5 +1,6 @@
 package tesauro;
 import tesauro.parser.*;
+import tesauro.analysis.Semantic;
 import tesauro.lexer.*;
 import tesauro.node.*;
 import java.io.*;
@@ -22,7 +23,8 @@ public class Main
    //Imprime árvore na saída padrão
    //tree.apply(new ASTPrinter());
    //Imprime árvore em interface gráfica
-   tree.apply(new ASTDisplay());
+   //tree.apply(new ASTDisplay());
+   tree.apply(new Semantic());
   }
   catch(Exception e)
   {

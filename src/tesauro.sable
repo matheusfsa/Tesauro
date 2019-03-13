@@ -93,42 +93,42 @@ Ignored Tokens
  
 Productions 
 
-    programa {-> P.programa  } = code id bloco {-> New programa (code , id , bloco  )  };
+    programa {-> P.programa  } = code id bloco {-> New programa (id , bloco  )  };
 
-    bloco {-> P.bloco  } = {abloco} start declaracao* cmd* finish {-> New bloco (start , [declaracao], [cmd], finish  )  };
+    bloco {-> P.bloco  } = {abloco} start declaracao* cmd* finish {-> New bloco ([declaracao], [cmd])  };
 
-    declaracao {-> P.declaracao  } = {avardeclaracao1} tipo id_comma* id p_v {-> New declaracao.var (tipo, [id_comma], id , p_v  )  }   |
-     	{constante} const tipo id p_v {-> New declaracao.constante (const , tipo , id , p_v  )  }   |
-		{const_att} const tipo id att_const valor p_v {-> New declaracao.const_att (const , tipo , id , att_const , valor.exp , p_v  )  };
+    declaracao {-> P.declaracao  } = {avardeclaracao1} tipo [lista]:id_comma* id p_v {-> New declaracao.var (tipo, [lista.id], id)  }   |
+     	{constante} const tipo id p_v {-> New declaracao.constante (tipo , id)  }   |
+		{const_att} const tipo id att_const valor p_v {-> New declaracao.const_att (tipo , id , valor.exp)  };
 
-    id_comma {-> P.id_comma } = id comma{-> New id_comma.id(id)  };
+    id_comma {-> T.id} = id comma{-> id  };
 
-    tipo_base {-> P.tipo_base  } = {symbol} symbol {-> New tipo_base.symbol (symbol  )  }   |
-		{real} real {-> New tipo_base.real (real  )  }   |
-		{integer} integer {-> New tipo_base.integer (integer  )  };
+    tipo_base {-> P.tipo  } = {symbol} symbol {-> New tipo.symbol (symbol)  }   |
+		{real} real {-> New tipo.real (real  )  }   |
+		{integer} integer {-> New tipo.integer (integer  )  };
 
-    tipo {-> P.tipo  } = {simples} tipo_base {-> New tipo.simples (tipo_base  )  }   |
-		{composto} tipo_base vector tipo_vec+{-> New tipo.composto (tipo_base , vector , [tipo_vec.exp])  };
+    tipo {-> P.tipo  } = {simples} tipo_base {-> tipo_base.tipo    }   |
+		{composto} tipo_base vector tipo_vec+{-> New tipo.composto (tipo_base.tipo , vector , [tipo_vec.exp])  };
 
     tipo_vec {-> P.exp  } = l_colch valor r_colch {-> valor.exp  };
 
-    var {-> P.exp  } = {avar} id var_vec*  {-> New exp.var (id , [ var_vec ] )  };
+    var {-> P.exp  } = {avar} id var_vec*  {-> New exp.var (id , [ var_vec.exp ] )  };
 
-    var_vec {-> P.var_vec  } = {var_vec} l_colch int_val r_colch {-> New var_vec.var_vec (l_colch , int_val , r_colch  )  };
+    var_vec {-> P.exp  } = l_colch [left]:exp r_colch {-> left.exp  };
 
-    cmd {-> P.cmd  } = {cmd_sem_coisa} cmd_sem_cmd {-> New cmd.cmd_sem_coisa (cmd_sem_cmd  )  }   |
+    cmd {-> P.cmd  } = {cmd_sem_cmd} cmd_sem_cmd {-> New cmd.cmd_sem_cmd (cmd_sem_cmd  )  }   |
 		{ict_do} ict_do {-> New cmd.ict_do (ict_do  )  }   |
 		{ict_do_else} ict_do_else {-> New cmd.ict_do_else (ict_do_else  )  }   |
 		{iteration_cmd} iteration_cmd {-> New cmd.iteration_cmd (iteration_cmd  )  }   |
-		{bloco} bloco {-> New cmd.bloco (bloco  )  };
+		{bloco} bloco {-> New cmd.bloco (bloco)};
 
-    cmd_no_short_ict {-> P.cmd_no_short_ict  } = {cmd_sem_coisa} cmd_sem_cmd {-> New cmd_no_short_ict.cmd_sem_coisa (cmd_sem_cmd  )  }   |
+    cmd_no_short_ict {-> P.cmd_no_short_ict  } = {cmd_sem_cmd} cmd_sem_cmd {-> New cmd_no_short_ict.cmd_sem_cmd (cmd_sem_cmd  )  }   |
 		{ict_do_else_no_if} ict_do_else_no_short_ict {-> New cmd_no_short_ict.ict_do_else_no_if (ict_do_else_no_short_ict  )  }   |
 		{iteration_cmd_no_if} iteration_cmd_no_short_ict {-> New cmd_no_short_ict.iteration_cmd_no_if (iteration_cmd_no_short_ict  )  }   |
 		{bloco} bloco {-> New cmd_no_short_ict.bloco (bloco  )  };
 
-    cmd_sem_cmd {-> P.cmd_sem_cmd  } = {att_cmd} att_cmd {-> New cmd_sem_cmd.att_cmd (att_cmd  )  }   |
-		{func_cmd} func_cmd {-> New cmd_sem_cmd.func_cmd (func_cmd  )  };
+    cmd_sem_cmd {-> P.cmd_sem_cmd  } = {att_cmd} att_cmd {-> att_cmd.cmd_sem_cmd  }   |
+		{func_cmd} func_cmd {-> func_cmd.cmd_sem_cmd  };
 
     ict_do {-> P.ict_do  } = in_case_that l_par exp r_par do cmd {-> New ict_do (exp , cmd  )  };
 
@@ -136,11 +136,11 @@ Productions
 
     ict_do_else_no_short_ict {-> P.ict_do_else_no_short_ict  } = in_case_that l_par exp r_par do [cmd1]: cmd_no_short_ict else [cmd2]: cmd_no_short_ict {-> New ict_do_else_no_short_ict (exp, cmd1 , cmd2  )  };
 
-    att_cmd {-> P.att_cmd  } = {var} var att exp p_v {-> New att_cmd.var (var.exp , exp)  }   |
-		{const} const var att_const exp p_v {-> New att_cmd.const (var.exp, exp)  };
+    att_cmd {-> P.cmd_sem_cmd  } = {att_var} var att exp p_v {-> New cmd_sem_cmd.att_var (var.exp , exp)  }   |
+		{att_const} const var att_const exp p_v {-> New cmd_sem_cmd.att_const (var.exp, exp)  };
 
-    func_cmd {-> P.func_cmd  } = {acapturefunccmd} capture l_par var_comma* var r_par p_v {-> New func_cmd.capture ([ var_comma.exp ], var.exp)  }   |
-		{ashowfunccmd} show l_par exp_comma* exp r_par p_v {-> New func_cmd.show ([ exp_comma.exp], exp)  };
+    func_cmd {-> P.cmd_sem_cmd  } = {acapturefunccmd} capture l_par var_comma* var r_par p_v {-> New cmd_sem_cmd.capture ([ var_comma.exp ], var.exp)  }   |
+		{ashowfunccmd} show l_par exp_comma* exp r_par p_v {-> New cmd_sem_cmd.show ([ exp_comma.exp], exp)  };
 
     iteration_cmd {-> P.iteration_cmd  } = {as_long_as} as_long_as l_par [cond]:exp r_par do [cmd_aa]:cmd {-> New iteration_cmd.as_long_as (cond.exp, cmd_aa.cmd)  }   |
 		{considering} considering [i]:var from [ini]: exp to [fim]: exp by [inc]: exp do [cmd_cons]:cmd {-> New iteration_cmd.considering (i.exp ,  ini.exp, fim.exp, inc.exp , cmd_cons.cmd)  };
@@ -148,7 +148,7 @@ Productions
     iteration_cmd_no_short_ict {-> P.iteration_cmd_no_short_ict  } = {as_long_as} as_long_as l_par [cond]:exp r_par do [cmd_aa]:cmd_no_short_ict {-> New iteration_cmd_no_short_ict.as_long_as (cond.exp, cmd_aa.cmd_no_short_ict  )  }   |
 		{considering} considering [i]:var from [ini]: exp to [fim]: exp by [inc]: exp do [cmd_cons]:cmd_no_short_ict {-> New iteration_cmd_no_short_ict.considering (i.exp , ini.exp , fim.exp , inc.exp , cmd_cons.cmd_no_short_ict  )  };
 
-    var_comma {-> P.exp  } = var comma {-> var.exp  };
+    var_comma {-> P.exp  } = var comma {-> var.exp };
 
     exp_comma {-> P.exp  } = exp comma {-> exp.exp  };
 
@@ -199,30 +199,21 @@ Abstract Syntax Tree
 
 
     programa =
-     code id bloco;
+     id bloco;
 
     bloco =
-     start declaracao* cmd* finish;
+     declaracao* cmd*;
 
     declaracao =
-     {var} tipo id_comma* id p_v | 
-     {constante} const tipo id p_v | 
-     {const_att} const tipo id att_const exp p_v;
-
-    id_comma=
-     {id} id;
-
-    tipo_base =
-     {symbol} symbol | 
-     {real} real | 
-     {integer} integer;
+     {var} tipo [lista]:id* id| 
+     {constante} tipo id| 
+     {const_att} tipo id exp;
 
     tipo =
-     {simples} tipo_base | 
-     {composto} tipo_base vector [vec]:exp*;
-
-    var_vec =
-     {var_vec} l_colch int_val r_colch;
+     {symbol} symbol | 
+     {real} real | 
+     {integer} integer |
+     {composto} tipo vector [vec]:exp*;
 
     valor =
      {sym} sym_val | 
@@ -231,21 +222,23 @@ Abstract Syntax Tree
      {string} sym_vec_val;
 
     cmd =
-     {cmd_sem_coisa} cmd_sem_cmd | 
+     {cmd_sem_cmd} cmd_sem_cmd | 
      {ict_do} ict_do | 
      {ict_do_else} ict_do_else | 
      {iteration_cmd} iteration_cmd | 
      {bloco} bloco;
 
     cmd_no_short_ict =
-     {cmd_sem_coisa} cmd_sem_cmd | 
+     {cmd_sem_cmd} cmd_sem_cmd | 
      {ict_do_else_no_if} ict_do_else_no_short_ict | 
      {iteration_cmd_no_if} iteration_cmd_no_short_ict | 
      {bloco} bloco;
 
     cmd_sem_cmd =
-     {att_cmd} att_cmd | 
-     {func_cmd} func_cmd;
+     {att_var} [left]:exp [right]:exp | 
+     {att_const} [left]:exp [right]:exp |
+     {capture} [lista]:exp* exp | 
+     {show} [lista]:exp* exp;
 
     ict_do =
      exp cmd;
@@ -254,14 +247,6 @@ Abstract Syntax Tree
      exp cmd_no_short_ict cmd;
     ict_do_else_no_short_ict =
      exp [cmd1]: cmd_no_short_ict [cmd2]: cmd_no_short_ict;
-
-    att_cmd =
-     {var} [left]:exp [right]:exp | 
-     {const} [left]:exp [right]:exp;
-
-    func_cmd =
-     {capture} [lista]:exp* exp | 
-     {show} [lista]:exp* exp;
 
     iteration_cmd =
      {as_long_as} [cond]:exp [cmd_aa]:cmd | 
@@ -292,5 +277,5 @@ Abstract Syntax Tree
         |{sym_vec_val} sym_vec_val
         |{min_un} exp
         |{not} exp
-        |{var} id var_vec*;
+        |{var} id exp*;
 		
