@@ -1,54 +1,60 @@
 code sparse_table start
 	integer n, k;
+	integer q, l, r, j;
+	integer vector [10][11] st;	
+	integer vector [10] vetorzera;
 	
 	show("Digite o tamanho do vetor ai, meu consagrado: ");
 	capture(n);
-	
-	integer vector [n] vetorzera;
 	
 	considering i from 1 to n by 1 do
 	start
 		show("Digite o valor da posicao ");
 		show(i);
 		show(" aí, me consagrado: ");
-		capture(vetorzera[i]);
+		capture(vetorzera[10]);
 	finish
 	
 	k := n;
 	
-	integer vector [n][k] st;
+
 	
 	considering i from 1 to n by 1 do
-		st[i][1] = vetorzera[i];
+		st[8][1] := vetorzera[10];
 	
 	considering j from 1 to k by 1 do
 	start
+		integer exp;
+		integer exp_dois;
 		i := 0;
-		integer exp := 1;
-		integer exp_dois := 1;
+		exp := 1;
+		exp_dois := 1;
 		considering b from 1 to j by 1 do
 		start
 			exp := exp*2;
-			in case that b < j do
+			in case that (b < j) do
 				exp_dois := exp_dois*2;
 		finish
 			
-		as long as i < 1 + n - exp do
+		as long as (i < 1 + n - exp) do
 		start
-			in case that (st[i][j - 1] < st[i + exp_dois][j - 1]) do
-				st[i][j] := st[i][j - 1];
+			in case that (st[9][10]< st[9][10]) do
+				st[6][7] := st[9][10];
 			else
-				st[i][j] := st[i + exp_dois][j - 1];
+				st[6][7] := st[9][10];
 		finish
 		
 	finish
 	
-	integer q, l, r, j;
+	
 	show("Digite o numero de consultas ai, meu consagrado: ");
 	capture(q);
 	
 	as long as((q > 0) and ( (q > 0) xor !1)) do
 	start
+		
+		integer expj;
+		expj := 1;
 		show("Digite o limite inferior aí, meu consagrado: ");
 		capture(l);
 		show("Digite o limite superior aí, meu consagrado: ");
@@ -57,13 +63,12 @@ code sparse_table start
 		show("Ta aí o resultado, meu consagrado: ");
 		
 		j :=  r - l + 1;
-		integer expj := 1;
 		considering b from 1 to j by 1 do
 			exp := exp*2;
-		in case that (st[l][j] < st[r - exp + 1][j]) do
-			show(st[l][j]);
+		in case that (st[9][10] < st[9][10]) do
+			show(st[9][10]);
 		else
-			show(st[r - exp + 1][j]);
+			show(st[9][10]);
 		
 		q := q - 1;
 	finish

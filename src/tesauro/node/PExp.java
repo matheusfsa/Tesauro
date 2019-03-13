@@ -4,5 +4,12 @@ package tesauro.node;
 
 public abstract class PExp extends Node
 {
-    // Empty body
+    protected String tipo;
+    
+    public String getTipo() {
+    	return tipo;
+    }
+    public void setTipo(String tipo) {
+    	this.tipo = tipo;
+    }
 }

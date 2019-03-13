@@ -1,31 +1,29 @@
 code kmp start
-	unalterable symbol vector txt = "ABABDABACDABABCABAB";
-	unalterable symbol vector pat = "ABABCABAB";
-
+	unalterable symbol vector[19] txt = "ABABDABACDABABCABAB";
+	unalterable symbol vector[9] pat = "ABABCABAB";
+	integer vector [19] lps;
 	integer M, N;
+	integer len, i, j;
 	M := 19;
 	N := 9;
-	integer vector lps[19];
-
-	integer len, i, j;
 	len := 0;
 	lps[1] := 0;
 	i := 2;
 	as long as (i <= M) do
 		start
-			in case that (pat[i] == pat[len]) do
+			in case that (pat[0] == pat[0]) do
 				start
 					len := len + 1;
-					lps[i] := len;
+					lps[0] := len;
 					i := i + 1;
 				finish
 			else
 				start
 					in case that (len != 0) do
-						len := lps[len - 1];
+						len := lps[0];
 					else
 						start
-							lps[i] := 0;
+							lps[0] := 0;
 							i := i + 1;
 						finish
 				finish
@@ -35,7 +33,7 @@ code kmp start
 	j := 1;
 	as long as (i <= N) do
 		start
-			in case that (pat[j] == txt[i]) do
+			in case that (pat[0] == txt[0]) do
 				start
 					j := j + 1;
 					i := i + 1;
@@ -44,13 +42,13 @@ code kmp start
 				start
 					show("Found pattern at index: ");
 					show(i - j);
-					j := lps[j - 1];
+					j := lps[0];
 				finish
 			else
-				in case that (i <= N and pat[j] != txt[i]) do
+				in case that (i <= N and pat[0] != txt[0]) do
 					start
 						in case that (j != 0) do
-							j := lps[j - 1];
+							j := lps[0];
 						else
 							i := i + 1;
 					finish

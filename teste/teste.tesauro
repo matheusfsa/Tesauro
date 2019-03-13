@@ -1,1 +1,10 @@
-4 + 8 * 35 - 12 and 17 / (8+2) > 35 + a[5] * 7  and (95 + b) - 65 
+code teste
+start
+	unalterable integer i = 3;
+	integer i;
+	in case that (r%2==0) do
+		in case that (r%2==0) do
+			m:= l+r/2;
+	else
+		m := 2;
+finish

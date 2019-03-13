@@ -1,34 +1,34 @@
 code merge start
 	integer l, m, r, i, j, k, n_um, n_dois, n;
+	real vector [0] arr;
+	{ create temp arrays }
+	real vector [0] L;
+	real vector [0] R;
 	show("Qual o tamanho do vetor?");
 	capture(n);
-	real a;
-	n := 5
-	arr[1] := 2.32;
-	arr[2] := -b01;
-	arr[3] := -52.5412;
-	arr[4] := 45.556E-3;
-	arr[5] := 2.36E2;
-	real vector [n] arr;
+	considering i from 1 to n by 1 do 
+		start
+			show("Valor:");
+			capture(arr[3]);
+		finish
 	show("Valor de l:");
 	capture(l);
 	show("Valor de r:");
 	capture(r); 
-	in case that r%2==0 do
+	in case that (r%2==0) do
 		m:= l+r/2;
 	else
-		m:= l+(r-1)/2;
-	n_um:= m - l +1;
-	n_dois:= r - m;
+		m := l+(r-1)/2;
+	n_um := m - l +1;
+	n_dois := r - m;
     
-    { create temp arrays }
-	real vector [n_um] L, [n_dois] R;
+   
 
 	{ Copy data to temp arrays L[] and R[] }
 	considering i from 1 to n_um by 1 do
-		L[i]:= arr[l + i];
+		L[0]:= arr[0];
 	considering j from 0 to n_dois by 1 do
-		R[j]:= arr[m + 1+ j];
+		R[0]:= arr[0];
 
 	{ Merge the temp arrays back into arr[l..r]}
 	i:=b1;
@@ -37,23 +37,23 @@ code merge start
 
 	as long as (!(!(i < n_um) or !(j < n_dois))) do
 		start
-			in case that (L[i] <= R[j]) do
+			in case that (L[0] <= R[0]) do
 				start
-					arr[k]:= L[i];
+					arr[0]:= L[0];
 					i:= i + 1;
 				finish
 			else
 				start
-					arr[k]:= R[j];
+					arr[0]:= R[0];
 					j:= j + 1;
 				finish
 			k := k + 1;
-		finish;	
+		finish	
 	{ Copy the remaining elements of L[], if there 
        are any }
 	as long as (n_um > i) do
 		start
-			arr[k]:= L[i];
+			arr[0]:= L[0];
 			i := i + 1;
 			k := k + 1;
 		finish
@@ -61,7 +61,7 @@ code merge start
        are any }	
 	as long as (-j >= -(n_dois - 1)) do
 		start
-			arr[k]:= R[j];
+			arr[0]:= R[0];
 			j := j + 1;
 			k := k + 1;
 		finish
