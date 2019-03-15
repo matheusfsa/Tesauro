@@ -7,8 +7,6 @@ import tesauro.analysis.*;
 @SuppressWarnings("nls")
 public final class AMinusExp extends PExp
 {
-    private PExp _left_;
-    private PExp _right_;
 
     public AMinusExp()
     {
@@ -23,6 +21,7 @@ public final class AMinusExp extends PExp
         setLeft(_left_);
 
         setRight(_right_);
+        setOp_tipo(2);
 
     }
 
@@ -39,12 +38,12 @@ public final class AMinusExp extends PExp
     {
         ((Analysis) sw).caseAMinusExp(this);
     }
-
+    @Override
     public PExp getLeft()
     {
         return this._left_;
     }
-
+    @Override
     public void setLeft(PExp node)
     {
         if(this._left_ != null)
@@ -64,12 +63,12 @@ public final class AMinusExp extends PExp
 
         this._left_ = node;
     }
-
+    @Override
     public PExp getRight()
     {
         return this._right_;
     }
-
+    @Override
     public void setRight(PExp node)
     {
         if(this._right_ != null)

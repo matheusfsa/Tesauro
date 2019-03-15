@@ -5,11 +5,45 @@ package tesauro.node;
 public abstract class PExp extends Node
 {
     protected String tipo;
+    protected PExp _left_;
+    protected PExp _right_;
+    protected PExp _valor_;
+    protected int op_tipo = -1;
+    /**
+     * 0 - Relacional
+     * 1 - Booleana
+     * 2 - Aritmética
+     */
     
     public String getTipo() {
     	return tipo;
     }
-    public void setTipo(String tipo) {
+    public int getOp_tipo() {
+		return op_tipo;
+	}
+	public void setOp_tipo(int op_tipo) {
+		this.op_tipo = op_tipo;
+	}
+	public void setTipo(String tipo) {
     	this.tipo = tipo;
     }
+	public PExp getLeft() {
+		return _left_;
+	}
+	public void setLeft(PExp _left_) {
+		this._left_ = _left_;
+	}
+	public PExp getRight() {
+		return _right_;
+	}
+	public void setRight(PExp _right_) {
+		this._right_ = _right_;
+	}
+	public PExp getValor() {
+		return _valor_;
+	}
+	public void setValor(PExp _valor_) {
+		this._valor_ = _valor_;
+	}
+    
 }

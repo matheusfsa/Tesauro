@@ -7,9 +7,6 @@ import tesauro.analysis.*;
 @SuppressWarnings("nls")
 public final class AMaiorIExp extends PExp
 {
-    private PExp _left_;
-    private PExp _right_;
-
     public AMaiorIExp()
     {
         // Constructor
@@ -23,7 +20,7 @@ public final class AMaiorIExp extends PExp
         setLeft(_left_);
 
         setRight(_right_);
-
+        setOp_tipo(0);
     }
 
     @Override
@@ -39,12 +36,12 @@ public final class AMaiorIExp extends PExp
     {
         ((Analysis) sw).caseAMaiorIExp(this);
     }
-
+    @Override
     public PExp getLeft()
     {
         return this._left_;
     }
-
+    @Override
     public void setLeft(PExp node)
     {
         if(this._left_ != null)
@@ -64,7 +61,7 @@ public final class AMaiorIExp extends PExp
 
         this._left_ = node;
     }
-
+    @Override
     public PExp getRight()
     {
         return this._right_;

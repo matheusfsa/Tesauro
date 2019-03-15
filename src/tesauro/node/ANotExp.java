@@ -19,7 +19,8 @@ public final class ANotExp extends PExp
     {
         // Constructor
         setExp(_exp_);
-
+        setValor(_exp_);
+        setOp_tipo(1);
     }
 
     @Override

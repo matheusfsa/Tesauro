@@ -7,8 +7,6 @@ import tesauro.analysis.*;
 @SuppressWarnings("nls")
 public final class ADiffExp extends PExp
 {
-    private PExp _left_;
-    private PExp _right_;
 
     public ADiffExp()
     {
@@ -21,9 +19,9 @@ public final class ADiffExp extends PExp
     {
         // Constructor
         setLeft(_left_);
-
+        setValor(null);
         setRight(_right_);
-
+        setOp_tipo(1);
     }
 
     @Override
@@ -39,12 +37,12 @@ public final class ADiffExp extends PExp
     {
         ((Analysis) sw).caseADiffExp(this);
     }
-
+    @Override
     public PExp getLeft()
     {
         return this._left_;
     }
-
+    @Override
     public void setLeft(PExp node)
     {
         if(this._left_ != null)
@@ -64,12 +62,12 @@ public final class ADiffExp extends PExp
 
         this._left_ = node;
     }
-
+    @Override
     public PExp getRight()
     {
         return this._right_;
     }
-
+    @Override
     public void setRight(PExp node)
     {
         if(this._right_ != null)

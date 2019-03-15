@@ -9,12 +9,12 @@ public final class TSymbol extends Token
 {
     public TSymbol()
     {
-        super.setText("symbol");
+        super.setText("SymVal");
     }
 
     public TSymbol(int line, int pos)
     {
-        super.setText("symbol");
+        super.setText("SymVal");
         setLine(line);
         setPos(pos);
     }

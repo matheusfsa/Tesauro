@@ -7,8 +7,6 @@ import tesauro.analysis.*;
 @SuppressWarnings("nls")
 public final class AOrExp extends PExp
 {
-    private PExp _left_;
-    private PExp _right_;
 
     public AOrExp()
     {
@@ -23,7 +21,7 @@ public final class AOrExp extends PExp
         setLeft(_left_);
 
         setRight(_right_);
-
+        setOp_tipo(1);
     }
 
     @Override
