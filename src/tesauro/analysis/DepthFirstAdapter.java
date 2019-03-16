@@ -11,20 +11,21 @@ public class DepthFirstAdapter extends AnalysisAdapter
     {
         defaultIn(node);
     }
-
+    
     public void outStart(Start node)
     {
+    	
         defaultOut(node);
     }
+    
 
     public void defaultIn(@SuppressWarnings("unused") Node node)
     {
-        // Do nothing
+    	// DO nothing
     }
 
     public void defaultOut(@SuppressWarnings("unused") Node node)
     {
-        // Do nothing
     }
 
     @Override

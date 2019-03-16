@@ -1,8 +1,8 @@
 code teste
 start
+	unalterable symbol vector[19] txt = "ABABDABACDABABCABAB";
 	unalterable integer i = 3;
-	symbol txt;
-	integer i;
+	integer m, l, r;
 	m:= l+r/2;
 	
 finish

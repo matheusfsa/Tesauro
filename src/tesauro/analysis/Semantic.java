@@ -1,15 +1,51 @@
 package tesauro.analysis;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Stack;
 
 import tesauro.node.*;
 
 public class Semantic extends DepthFirstAdapter {
 	private ArrayList<HashMap<Integer, Identificador>> tabs;
+	String[] tipos_simples = {"Integer", "SymVal", "Real"};
+	private final ArrayList<String> t_simples = new ArrayList<>(Arrays.asList(tipos_simples)); 
+	String[] tipos_composto = {"SymValV", "IntegerV", "RealV"};
+	private final ArrayList<String> t_composto = new ArrayList<>(Arrays.asList(tipos_composto));
+	private Tabela tabela;
 	public Semantic() {
 		tabs = new ArrayList<>();
+		tabela = new Tabela(null);
+	}
+	private void erro(String msg, boolean para) {
+		if(para) {
+			System.err.println("Erro: " + msg);
+			System.exit(0);
+		}else {
+			System.err.println("Warning: " + msg);
+		}
+	}
+	@Override
+    public void defaultOut(@SuppressWarnings("unused") Node node)
+    {
+        // Do nothing
+    	if(node instanceof PExp)
+    		outExp((PExp) node);
+    	else if(node instanceof ABloco || node instanceof ABlocoCmd || node instanceof ABlocoCmdNoShortIct) {
+			System.out.println("Hash: " + tabela);
+    		tabela = tabela.getNext();
+    	}
+    	
+    }
+	@Override
+	public void defaultIn(Node node) {
+		if(node instanceof ABloco || node instanceof ABlocoCmd || node instanceof ABlocoCmdNoShortIct)
+			tabela = new Tabela(tabela);
+			
+		
 	}
 	@Override
 	public void inStart(Start node)
@@ -36,24 +72,24 @@ public class Semantic extends DepthFirstAdapter {
 	public void outAPrograma(APrograma node) {
 		defaultOut(node);
 	}
-	private int compativel(PExp node) {
+	public static int compativel(PExp node) {
 		/**
 		 * -1: erro
 		 * 0: warning
 		 * 1: show
 		 */
-		if(node.getOp_tipo() == 1 || node.getOp_tipo() == -1) {
+		if(node.getOp_tipo() <= 1 ) {
 			return 1;
 		}
 		if(node.getValor() == null) {
-			boolean leftIsString = node.getLeft().getTipo().equals("SymVecVal");
-			boolean rightIsString = node.getRight().getTipo().equals("SymVecVal");
-			if(leftIsString ^ rightIsString ) 
+			boolean leftIsString = node.getLeft().getTipo().equals("String");
+			boolean rightIsString = node.getRight().getTipo().equals("String");
+			if(leftIsString || rightIsString ) 
 				return -1;
 			return 1;
 			
 		}else {
-			if(node.getValor().getTipo().equals("SymVecVal")) 
+			if(node.getValor().getTipo().equals("String")) 
 				return -1;
 			return 1;
 			
@@ -78,12 +114,17 @@ public class Semantic extends DepthFirstAdapter {
         System.out.print(node.getId().toString());
         System.out.println();
         System.out.println("Ações a serem tomadas na tabela de símbolos:");
-        
+        boolean res;
         for(TId e : copy)
         {
-        	
+        	res = tabela.add(new Identificador(e.toString(), node.getTipo().toString(), false, false));
             System.out.println("-->Inserir ( "+ e.toString()+", " +node.getTipo()+")");
+            if(!res)
+            	erro("Variável já foi declarada", true);
         }
+        res = tabela.add(new Identificador(node.getId().toString(), node.getTipo().toString(), false, false));
+        if(!res)
+        	erro("Variável já foi declarada", true);
         System.out.println("-->Inserir ( "+ node.getId().toString()+", " +node.getTipo()+")");
 	}
 	@Override
@@ -97,6 +138,9 @@ public class Semantic extends DepthFirstAdapter {
 		System.out.print(node.getId().toString());
         System.out.println();
         System.out.println("Ações a serem tomadas na tabela de símbolos:");
+        boolean res = tabela.add(new Identificador(node.getId().toString(), node.getTipo().toString(), false, false));
+        if(!res)
+        	erro("Variável já foi declarada", true);
         System.out.println("-->Inserir ( "+ node.getId().toString()+", " +node.getTipo()+")");
 	}
 	@Override
@@ -106,36 +150,43 @@ public class Semantic extends DepthFirstAdapter {
 		System.out.print("Constantes: ");
 		System.out.print(node.getId().toString());
 		System.out.print("Expressão: ");
-		System.out.print(node.getExp().toString());
-        System.out.println();
-        System.out.println("Ações a serem tomadas na tabela de símbolos: ");
-        System.out.println("-->Inserir ( "+ node.getId().toString()+", " + node.getTipo()+")");
+		System.out.println(node.getExp().toString());
+		System.out.println("Ações a serem tomadas na tabela de símbolos: ");
+		boolean res;
+		if(node.getTipo() instanceof ACompostoTipo) {
+			ACompostoTipo tipo = (ACompostoTipo)node.getTipo();
+			res = tabela.add(new Identificador(node.getId().toString(), tipo.getTipo().toString().replaceAll(" ", "V"), false, false));
+			if(!res)
+				erro("Variável já foi declarada", true);
+	        System.out.println("-->Inserir ( "+ node.getId().toString()+", " + tipo.getTipo().toString().replaceAll(" ", "V")+" )");
+		}else {
+			res = tabela.add(new Identificador(node.getId().toString(), node.getTipo().toString(), false, false));
+			if(!res)
+				erro("Variável já foi declarada", true);
+	        
+		    System.out.println("-->Inserir ( "+ node.getId().toString()+", " + node.getTipo()+")");
+		}
+       
 	}
 	@Override
     public void outAVarExp(AVarExp node) {
 		System.out.println("-------------------------------------------------");
 		System.out.println("Verificar se a variável " + node.getId() + " está na tabela.");
 		node.setOp_tipo(-1);
+		Identificador id = tabela.get(new Identificador(node.getId().toString()));
+		if(id == null)
+			erro("Variável não foi declarada", true);
 		//SÓ PARA TESTE
 		node.setTipo("Integer");
     }
-
-	@Override
-	public void outAAttVarCmdSemCmd(AAttVarCmdSemCmd node) {
-		// TODO Auto-generated method stub
-		System.out.println("-------------------------------------------------");
-		//System.out.println(node.getRight());
-		System.out.println("É compativel? " + compativel(node.getRight()));
-	}
-	public void outExp(PExp node) {
-		
-		if(compativel(node) > -1) {
+    public void outExp(PExp node) {
+		if(Semantic.compativel(node) > -1) {
 			if(node.getOp_tipo()>-1) {
 					if(node.getOp_tipo() == 0 || node.getOp_tipo() == 1) {
 						node.setTipo("Integer");
 					}else {
-						if(node.getLeft().getTipo().equals("RealVal") || node.getRight().getTipo().equals("RealVal")) 
-							node.setTipo("RealVal");
+						if(node.getLeft().getTipo().equals("Real") || node.getRight().getTipo().equals("Real")) 
+							node.setTipo("Real");
 						else
 							node.setTipo("Integer");
 					}
@@ -144,13 +195,22 @@ public class Semantic extends DepthFirstAdapter {
 			System.out.println("Tipos incopativeis");
 		}
 	}
+    
+	@Override
+	public void outAAttVarCmdSemCmd(AAttVarCmdSemCmd node) {
+		// TODO Auto-generated method stub
+		System.out.println("-------------------------------------------------");
+		//System.out.println(node.getRight());
+		System.out.println("É compativel? " + compativel(node.getRight()));
+	}
+	
 	@Override
 	public void outASymValExp(ASymValExp node) {
 		node.setTipo("SymVal");
 	}
 	@Override
 	public void outASymVecValExp(ASymVecValExp node) {
-		node.setTipo("SymVecVal");
+		node.setTipo("SymVal");
 	}
 	@Override
 	public void outAIntValExp(AIntValExp node) {
@@ -158,73 +218,9 @@ public class Semantic extends DepthFirstAdapter {
 	}
     @Override
     public void outARealValExp(ARealValExp node) {
-    	node.setTipo("RealVal");
-    }
-    @Override
-    public void outAAndExp(AAndExp node) {
-    	outExp(node);
-    }
-    @Override
-    public void outADiffExp(ADiffExp node) {
-    	outExp(node);
-    }
-    @Override
-    public void outADivExp(ADivExp node) {
-    	outExp(node);
-    }
-    @Override
-    public void outAIgualExp(AIgualExp node) {
-    	outExp(node);
-    }
-    @Override
-    public void outAMaiorExp(AMaiorExp node) {
-    	outExp(node);
-    }
-    @Override
-    public void outAMaiorIExp(AMaiorIExp node) {
-    	outExp(node);
-    }
-    @Override
-    public void outAMenorExp(AMenorExp node) {
-    	outExp(node);
-    }
-    @Override
-    public void outAMenorIExp(AMenorIExp node) {
-    	outExp(node);
-    }
-    @Override
-    public void outAMinUnExp(AMinUnExp node) {
-    	outExp(node);
-    }
-    @Override
-    public void outAMinusExp(AMinusExp node) {
-    	outExp(node);
-    }
-    @Override
-    public void outAModExp(AModExp node) {
-    	outExp(node);
-    }
-    @Override
-    public void outAMultExp(AMultExp node) {
-    	outExp(node);
-    }
-    @Override
-    public void outANotExp(ANotExp node) {
-    	outExp(node);
-    }
-    @Override
-    public void outAOrExp(AOrExp node) {
-    	outExp(node);
-    }
-    @Override
-    public void outASumExp(ASumExp node) {
-    	outExp(node);
+    	node.setTipo("Real");
     }
     
-    @Override
-    public void outAXorExp(AXorExp node) {
-    	outExp(node);
-    }
 	
 	
 }

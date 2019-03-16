@@ -15,6 +15,9 @@ public class Identificador {
 		this.init = init;
 		this.is_prog = is_prog;
 	}
+	public Identificador(String nome) {
+		this.nome = nome;
+	}
 	public String getNome() {
 		return nome;
 	}
@@ -49,6 +52,12 @@ public class Identificador {
 		}
 		
 		return Math.abs(h);
+	}
+	@Override
+	public boolean equals(Object obj) {
+		Identificador other = (Identificador)obj;
+		return nome.equals(other.getNome());
+		
 	}
 	@Override
 	public String toString() {
