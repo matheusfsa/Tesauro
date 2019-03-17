@@ -1,7 +1,7 @@
 code teste
 start
 	unalterable symbol vector[19] txt = "ABABDABACDABABCABAB";
-	unalterable integer i = 3;
+	unalterable integer i;
 	integer m, l, r;
 	integer vector[10] x;
 	x[1] := 1;

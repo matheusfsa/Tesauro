@@ -9,6 +9,9 @@ public abstract class PExp extends Node
     protected PExp _right_;
     protected PExp _valor_;
     protected int op_tipo = -1;
+    protected int is_constant = -1;
+    protected int is_init = -1;
+    protected int is_vec = -1;
     /**
      * 0 - Relacional
      * 1 - Booleana
@@ -44,6 +47,24 @@ public abstract class PExp extends Node
 	}
 	public void setValor(PExp _valor_) {
 		this._valor_ = _valor_;
+	}
+	public void setIsConstant(int is_constant) {
+		this.is_constant = is_constant;
+	}
+	public void setIsInit(int is_init) {
+		this.is_init = is_init;
+	}
+	public int getIsInit() {
+		return is_init;
+	}
+	public int getIsConstant() {
+		return is_constant;
+	}
+	public void setIsVec(int is_vec) {
+		this.is_vec = is_vec;
+	}
+	public int getIsVec() {
+		return is_vec;
 	}
     
 }

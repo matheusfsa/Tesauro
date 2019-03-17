@@ -54,17 +54,14 @@ public class Semantic extends DepthFirstAdapter {
 		   System.out.println("Iniciando análise semântica...");
 	    }
 	
-	 @Override
-	 public void outStart(Start node)
-	    {
-		    System.out.println("-------------------------------------------------");
-	        System.out.println("Fim da análise semântica");
-	        System.out.println("-------------------------------------------------");
-			  
-	    }
 	@Override
-	 public void inAPrograma(APrograma node)
-    {
+	public void outStart(Start node){
+	    System.out.println("-------------------------------------------------");
+        System.out.println("Fim da análise semântica");
+        System.out.println("-------------------------------------------------");
+	}
+@Override
+ 	public void inAPrograma(APrograma node){
 		System.out.println("Programa");
         defaultIn(node);
     }
@@ -177,12 +174,12 @@ public class Semantic extends DepthFirstAdapter {
 		boolean res;
 		if(node.getTipo() instanceof ACompostoTipo) {
 			ACompostoTipo tipo = (ACompostoTipo)node.getTipo();
-			res = tabela.add(new Identificador(node.getId().toString(), tipo.getTipo().toString(), false, false, true, true));
+			res = tabela.add(new Identificador(node.getId().toString(), tipo.getTipo().toString(), true, false, true, true));
 			if(!res)
 				erro("Variável já foi declarada", true);
 	        System.out.println("-->Inserir ( "+ node.getId().toString()+", " + tipo.getTipo().toString().replaceAll(" ", "V")+" )");
 		}else {
-			res = tabela.add(new Identificador(node.getId().toString(), node.getTipo().toString(), false, false, true, true));
+			res = tabela.add(new Identificador(node.getId().toString(), node.getTipo().toString(), true, false, true, true));
 			if(!res)
 				erro("Variável já foi declarada", true);
 			System.out.println("-->Inserir ( "+ node.getId().toString()+", " + node.getTipo()+")");
@@ -198,8 +195,21 @@ public class Semantic extends DepthFirstAdapter {
 		Identificador id = tabela.get(new Identificador(node.getId().toString()));
 		if(id == null)
 			erro("Variável não foi declarada", true);
+		if(id.isInit())
+			node.setIsInit(1);
+		else
+			node.setIsInit(0);
+		if(id.isConstante())
+			node.setIsConstant(1);
+		else
+			node.setIsConstant(0);
+		if(node.getExp().size() > 0)
+			node.setIsVec(0);
+		else {
+			if(id.isVetor())
+				node.setIsVec(1);
+		}
 		//SÓ PARA TESTE
-		System.out.println(node.getExp().size());
 		//System.out.println(id.getTipo().getClass());
 		node.setTipo(id.getTipo());
     }
@@ -224,11 +234,28 @@ public class Semantic extends DepthFirstAdapter {
 	public void outAAttVarCmdSemCmd(AAttVarCmdSemCmd node) {
 		// TODO Auto-generated method stub
 		System.out.println("-------------------------------------------------");
-		System.out.println("Tipo da esquerda: " + node.getLeft().getTipo());
-		System.out.println("Tipo da direita: " + node.getRight().getTipo());
+		if(node.getLeft().getIsConstant() ==  1) {
+			erro("Esse tipo de atribuição não é permitido para constantes", true);
+		}
+		if(node.getLeft().getIsVec() == 1 || node.getRight().getIsVec() == 1 ) {
+			erro("Esse tipo de atribuição não é permitido para vetores", true);
+		}
+		
 		System.out.println("-------------------------------------------------");
 		
 		
+	}
+	@Override
+	public void outAAttConstCmdSemCmd(AAttConstCmdSemCmd node) {
+		System.out.println("-------------------------------------------------");
+		if(node.getLeft().getIsConstant() ==  0) {
+			erro("Esse tipo de atribuição não é permitido para variáveis", true);
+		}
+		if(node.getLeft().getIsInit() == 1) {
+			erro("O valor de uma constante não pode ser alterado", true);
+		}
+		System.out.println("-------------------------------------------------");
+		super.outAAttConstCmdSemCmd(node);
 	}
 	
 	@Override
