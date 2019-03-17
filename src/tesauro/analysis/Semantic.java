@@ -11,10 +11,10 @@ import tesauro.node.*;
 
 public class Semantic extends DepthFirstAdapter {
 	private ArrayList<HashMap<Integer, Identificador>> tabs;
-	String[] tipos_simples = {"Integer", "SymVal", "Real"};
-	private final ArrayList<String> t_simples = new ArrayList<>(Arrays.asList(tipos_simples)); 
-	String[] tipos_composto = {"SymValV", "IntegerV", "RealV"};
-	private final ArrayList<String> t_composto = new ArrayList<>(Arrays.asList(tipos_composto));
+	private static String[] tipos_simples = {"Integer", "SymVal", "Real"};
+	private static ArrayList<String> t_simples = new ArrayList<>(Arrays.asList(tipos_simples)); 
+	private static String[] tipos_composto = {"SymValV", "IntegerV", "RealV"};
+	private static ArrayList<String> t_composto = new ArrayList<>(Arrays.asList(tipos_composto));
 	private Tabela tabela;
 	public Semantic() {
 		tabs = new ArrayList<>();
@@ -82,8 +82,8 @@ public class Semantic extends DepthFirstAdapter {
 			return 1;
 		}
 		if(node.getValor() == null) {
-			boolean leftIsString = node.getLeft().getTipo().equals("String");
-			boolean rightIsString = node.getRight().getTipo().equals("String");
+			boolean leftIsString =  t_composto.contains(node.getLeft().getTipo());
+			boolean rightIsString = t_composto.contains(node.getRight().getTipo());
 			if(leftIsString || rightIsString ) 
 				return -1;
 			return 1;
@@ -115,14 +115,23 @@ public class Semantic extends DepthFirstAdapter {
         System.out.println();
         System.out.println("Ações a serem tomadas na tabela de símbolos:");
         boolean res;
+        String tipo;
+        boolean is_vetor = false;
+        if(node.getTipo() instanceof ACompostoTipo) {
+			ACompostoTipo a_tipo = (ACompostoTipo)node.getTipo();
+			tipo = a_tipo.getTipo().toString();
+			is_vetor = true;
+        }else {
+        	tipo = node.getTipo().toString();
+        }
         for(TId e : copy)
         {
-        	res = tabela.add(new Identificador(e.toString(), node.getTipo().toString(), false, false));
+        	res = tabela.add(new Identificador(e.toString(), tipo, false, false, is_vetor, false));
             System.out.println("-->Inserir ( "+ e.toString()+", " +node.getTipo()+")");
             if(!res)
             	erro("Variável já foi declarada", true);
         }
-        res = tabela.add(new Identificador(node.getId().toString(), node.getTipo().toString(), false, false));
+        res = tabela.add(new Identificador(node.getId().toString(), node.getTipo().toString(), false, false, is_vetor, false));
         if(!res)
         	erro("Variável já foi declarada", true);
         System.out.println("-->Inserir ( "+ node.getId().toString()+", " +node.getTipo()+")");
@@ -138,7 +147,20 @@ public class Semantic extends DepthFirstAdapter {
 		System.out.print(node.getId().toString());
         System.out.println();
         System.out.println("Ações a serem tomadas na tabela de símbolos:");
-        boolean res = tabela.add(new Identificador(node.getId().toString(), node.getTipo().toString(), false, false));
+        boolean res;
+		if(node.getTipo() instanceof ACompostoTipo) {
+			ACompostoTipo tipo = (ACompostoTipo)node.getTipo();
+			res = tabela.add(new Identificador(node.getId().toString(), tipo.getTipo().toString(), false, false, true, true));
+			if(!res)
+				erro("Variável já foi declarada", true);
+	        System.out.println("-->Inserir ( "+ node.getId().toString()+", " + tipo.getTipo().toString()+" )");
+		}else {
+			res = tabela.add(new Identificador(node.getId().toString(), node.getTipo().toString(), false, false, true, true));
+			if(!res)
+				erro("Variável já foi declarada", true);
+			System.out.println("-->Inserir ( "+ node.getId().toString()+", " + node.getTipo()+")");
+		}
+       
         if(!res)
         	erro("Variável já foi declarada", true);
         System.out.println("-->Inserir ( "+ node.getId().toString()+", " +node.getTipo()+")");
@@ -155,29 +177,31 @@ public class Semantic extends DepthFirstAdapter {
 		boolean res;
 		if(node.getTipo() instanceof ACompostoTipo) {
 			ACompostoTipo tipo = (ACompostoTipo)node.getTipo();
-			res = tabela.add(new Identificador(node.getId().toString(), tipo.getTipo().toString().replaceAll(" ", "V"), false, false));
+			res = tabela.add(new Identificador(node.getId().toString(), tipo.getTipo().toString(), false, false, true, true));
 			if(!res)
 				erro("Variável já foi declarada", true);
 	        System.out.println("-->Inserir ( "+ node.getId().toString()+", " + tipo.getTipo().toString().replaceAll(" ", "V")+" )");
 		}else {
-			res = tabela.add(new Identificador(node.getId().toString(), node.getTipo().toString(), false, false));
+			res = tabela.add(new Identificador(node.getId().toString(), node.getTipo().toString(), false, false, true, true));
 			if(!res)
 				erro("Variável já foi declarada", true);
-	        
-		    System.out.println("-->Inserir ( "+ node.getId().toString()+", " + node.getTipo()+")");
+			System.out.println("-->Inserir ( "+ node.getId().toString()+", " + node.getTipo()+")");
 		}
        
 	}
 	@Override
     public void outAVarExp(AVarExp node) {
 		System.out.println("-------------------------------------------------");
+		System.out.println("Classe: " + node.getClass());
 		System.out.println("Verificar se a variável " + node.getId() + " está na tabela.");
 		node.setOp_tipo(-1);
 		Identificador id = tabela.get(new Identificador(node.getId().toString()));
 		if(id == null)
 			erro("Variável não foi declarada", true);
 		//SÓ PARA TESTE
-		node.setTipo("Integer");
+		System.out.println(node.getExp().size());
+		//System.out.println(id.getTipo().getClass());
+		node.setTipo(id.getTipo());
     }
     public void outExp(PExp node) {
 		if(Semantic.compativel(node) > -1) {
@@ -192,7 +216,7 @@ public class Semantic extends DepthFirstAdapter {
 					}
 			}
 		}else {
-			System.out.println("Tipos incopativeis");
+			erro("Tipos incompatíveis", true);
 		}
 	}
     
@@ -200,8 +224,11 @@ public class Semantic extends DepthFirstAdapter {
 	public void outAAttVarCmdSemCmd(AAttVarCmdSemCmd node) {
 		// TODO Auto-generated method stub
 		System.out.println("-------------------------------------------------");
-		//System.out.println(node.getRight());
-		System.out.println("É compativel? " + compativel(node.getRight()));
+		System.out.println("Tipo da esquerda: " + node.getLeft().getTipo());
+		System.out.println("Tipo da direita: " + node.getRight().getTipo());
+		System.out.println("-------------------------------------------------");
+		
+		
 	}
 	
 	@Override
