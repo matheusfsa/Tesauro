@@ -79,14 +79,12 @@ public class Semantic extends DepthFirstAdapter {
 			return 1;
 		}
 		if(node.getValor() == null) {
-			boolean leftIsString =  t_composto.contains(node.getLeft().getTipo());
-			boolean rightIsString = t_composto.contains(node.getRight().getTipo());
-			if(leftIsString || rightIsString ) 
+			if(node.getRight().getIsVec() == 1  || node.getRight().getIsVec() == 1 ) 
 				return -1;
 			return 1;
 			
 		}else {
-			if(node.getValor().getTipo().equals("String")) 
+			if(node.getValor().getIsVec() == 1) 
 				return -1;
 			return 1;
 			
