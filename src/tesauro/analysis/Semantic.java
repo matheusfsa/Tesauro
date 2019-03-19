@@ -10,14 +10,12 @@ import java.util.Stack;
 import tesauro.node.*;
 
 public class Semantic extends DepthFirstAdapter {
-	private ArrayList<HashMap<Integer, Identificador>> tabs;
 	private static String[] tipos_simples = {"integer", "symbol", "real"};
 	private static ArrayList<String> t_simples = new ArrayList<>(Arrays.asList(tipos_simples)); 
 	private static String[] tipos_composto = {"SymValV", "IntegerV", "RealV"};
 	private static ArrayList<String> t_composto = new ArrayList<>(Arrays.asList(tipos_composto));
 	private Tabela tabela;
 	public Semantic() {
-		tabs = new ArrayList<>();
 		tabela = new Tabela(null);
 	}
 	private void erro(String msg, boolean para) {
@@ -340,13 +338,13 @@ public class Semantic extends DepthFirstAdapter {
     		AVarExp left = (AVarExp)node.getLeft();
     		Identificador id = tabela.get(new Identificador(left.getId().toString()));
     		if(!id.isInit()) 
-    			erro("Variável " + id.getNome() + " não inicializada", true);
+    			erro("Variável " + id.getNome() + " não inicializada", false);
     	}
     	if(node.getRight() instanceof AVarExp) {
     		AVarExp right = (AVarExp)node.getRight();
     		Identificador id = tabela.get(new Identificador(right.getId().toString()));
     		if(!id.isInit()) 
-    			erro("Variável " + id.getNome() + " não inicializada", true);
+    			erro("Variável " + id.getNome() + " não inicializada", false);
     	}
     }
     @Override
@@ -357,13 +355,13 @@ public class Semantic extends DepthFirstAdapter {
     		AVarExp left = (AVarExp)node.getLeft();
     		Identificador id = tabela.get(new Identificador(left.getId().toString()));
     		if(!id.isInit()) 
-    			erro("Variável " + id.getNome() + " não inicializada", true);
+    			erro("Variável " + id.getNome() + " não inicializada", false);
     	}
     	if(node.getRight() instanceof AVarExp) {
     		AVarExp right = (AVarExp)node.getRight();
     		Identificador id = tabela.get(new Identificador(right.getId().toString()));
     		if(!id.isInit()) 
-    			erro("Variável " + id.getNome() + " não inicializada", true);
+    			erro("Variável " + id.getNome() + " não inicializada", false);
     	}
     }
     @Override
@@ -374,13 +372,13 @@ public class Semantic extends DepthFirstAdapter {
     		AVarExp left = (AVarExp)node.getLeft();
     		Identificador id = tabela.get(new Identificador(left.getId().toString()));
     		if(!id.isInit()) 
-    			erro("Variável " + id.getNome() + " não inicializada", true);
+    			erro("Variável " + id.getNome() + " não inicializada", false);
     	}
     	if(node.getRight() instanceof AVarExp) {
     		AVarExp right = (AVarExp)node.getRight();
     		Identificador id = tabela.get(new Identificador(right.getId().toString()));
     		if(!id.isInit()) 
-    			erro("Variável " + id.getNome() + " não inicializada", true);
+    			erro("Variável " + id.getNome() + " não inicializada", false);
     	}
     }
     @Override
@@ -391,13 +389,13 @@ public class Semantic extends DepthFirstAdapter {
     		AVarExp left = (AVarExp)node.getLeft();
     		Identificador id = tabela.get(new Identificador(left.getId().toString()));
     		if(!id.isInit()) 
-    			erro("Variável " + id.getNome() + " não inicializada", true);
+    			erro("Variável " + id.getNome() + " não inicializada", false);
     	}
     	if(node.getRight() instanceof AVarExp) {
     		AVarExp right = (AVarExp)node.getRight();
     		Identificador id = tabela.get(new Identificador(right.getId().toString()));
     		if(!id.isInit()) 
-    			erro("Variável " + id.getNome() + " não inicializada", true);
+    			erro("Variável " + id.getNome() + " não inicializada", false);
     	}
     }
     @Override
@@ -408,13 +406,13 @@ public class Semantic extends DepthFirstAdapter {
     		AVarExp left = (AVarExp)node.getLeft();
     		Identificador id = tabela.get(new Identificador(left.getId().toString()));
     		if(!id.isInit()) 
-    			erro("Variável " + id.getNome() + " não inicializada", true);
+    			erro("Variável " + id.getNome() + " não inicializada", false);
     	}
     	if(node.getRight() instanceof AVarExp) {
     		AVarExp right = (AVarExp)node.getRight();
     		Identificador id = tabela.get(new Identificador(right.getId().toString()));
     		if(!id.isInit()) 
-    			erro("Variável " + id.getNome() + " não inicializada", true);
+    			erro("Variável " + id.getNome() + " não inicializada", false);
     	}
     }
     @Override
@@ -425,13 +423,13 @@ public class Semantic extends DepthFirstAdapter {
     		AVarExp left = (AVarExp)node.getLeft();
     		Identificador id = tabela.get(new Identificador(left.getId().toString()));
     		if(!id.isInit()) 
-    			erro("Variável " + id.getNome() + " não inicializada", true);
+    			erro("Variável " + id.getNome() + " não inicializada", false);
     	}
     	if(node.getRight() instanceof AVarExp) {
     		AVarExp right = (AVarExp)node.getRight();
     		Identificador id = tabela.get(new Identificador(right.getId().toString()));
     		if(!id.isInit()) 
-    			erro("Variável " + id.getNome() + " não inicializada", true);
+    			erro("Variável " + id.getNome() + " não inicializada", false);
     	}
     }
     @Override
@@ -442,13 +440,13 @@ public class Semantic extends DepthFirstAdapter {
     		AVarExp left = (AVarExp)node.getLeft();
     		Identificador id = tabela.get(new Identificador(left.getId().toString()));
     		if(!id.isInit()) 
-    			erro("Variável " + id.getNome() + " não inicializada", true);
+    			erro("Variável " + id.getNome() + " não inicializada", false);
     	}
     	if(node.getRight() instanceof AVarExp) {
     		AVarExp right = (AVarExp)node.getRight();
     		Identificador id = tabela.get(new Identificador(right.getId().toString()));
     		if(!id.isInit()) 
-    			erro("Variável " + id.getNome() + " não inicializada", true);
+    			erro("Variável " + id.getNome() + " não inicializada", false);
     	}
     }
     @Override
@@ -459,13 +457,13 @@ public class Semantic extends DepthFirstAdapter {
     		AVarExp left = (AVarExp)node.getLeft();
     		Identificador id = tabela.get(new Identificador(left.getId().toString()));
     		if(!id.isInit()) 
-    			erro("Variável " + id.getNome() + " não inicializada", true);
+    			erro("Variável " + id.getNome() + " não inicializada", false);
     	}
     	if(node.getRight() instanceof AVarExp) {
     		AVarExp right = (AVarExp)node.getRight();
     		Identificador id = tabela.get(new Identificador(right.getId().toString()));
     		if(!id.isInit()) 
-    			erro("Variável " + id.getNome() + " não inicializada", true);
+    			erro("Variável " + id.getNome() + " não inicializada", false);
     	}
     }
     @Override
@@ -476,13 +474,13 @@ public class Semantic extends DepthFirstAdapter {
     		AVarExp left = (AVarExp)node.getLeft();
     		Identificador id = tabela.get(new Identificador(left.getId().toString()));
     		if(!id.isInit()) 
-    			erro("Variável " + id.getNome() + " não inicializada", true);
+    			erro("Variável " + id.getNome() + " não inicializada", false);
     	}
     	if(node.getRight() instanceof AVarExp) {
     		AVarExp right = (AVarExp)node.getRight();
     		Identificador id = tabela.get(new Identificador(right.getId().toString()));
     		if(!id.isInit()) 
-    			erro("Variável " + id.getNome() + " não inicializada", true);
+    			erro("Variável " + id.getNome() + " não inicializada", false);
     	}
     }
     @Override
@@ -493,13 +491,13 @@ public class Semantic extends DepthFirstAdapter {
     		AVarExp left = (AVarExp)node.getLeft();
     		Identificador id = tabela.get(new Identificador(left.getId().toString()));
     		if(!id.isInit()) 
-    			erro("Variável " + id.getNome() + " não inicializada", true);
+    			erro("Variável " + id.getNome() + " não inicializada", false);
     	}
     	if(node.getRight() instanceof AVarExp) {
     		AVarExp right = (AVarExp)node.getRight();
     		Identificador id = tabela.get(new Identificador(right.getId().toString()));
     		if(!id.isInit()) 
-    			erro("Variável " + id.getNome() + " não inicializada", true);
+    			erro("Variável " + id.getNome() + " não inicializada", false);
     	}
     }
     @Override
@@ -510,13 +508,13 @@ public class Semantic extends DepthFirstAdapter {
     		AVarExp left = (AVarExp)node.getLeft();
     		Identificador id = tabela.get(new Identificador(left.getId().toString()));
     		if(!id.isInit()) 
-    			erro("Variável " + id.getNome() + " não inicializada", true);
+    			erro("Variável " + id.getNome() + " não inicializada", false);
     	}
     	if(node.getRight() instanceof AVarExp) {
     		AVarExp right = (AVarExp)node.getRight();
     		Identificador id = tabela.get(new Identificador(right.getId().toString()));
     		if(!id.isInit()) 
-    			erro("Variável " + id.getNome() + " não inicializada", true);
+    			erro("Variável " + id.getNome() + " não inicializada", false);
     	}
     }
     @Override
@@ -527,13 +525,13 @@ public class Semantic extends DepthFirstAdapter {
     		AVarExp left = (AVarExp)node.getLeft();
     		Identificador id = tabela.get(new Identificador(left.getId().toString()));
     		if(!id.isInit()) 
-    			erro("Variável " + id.getNome() + " não inicializada", true);
+    			erro("Variável " + id.getNome() + " não inicializada", false);
     	}
     	if(node.getRight() instanceof AVarExp) {
     		AVarExp right = (AVarExp)node.getRight();
     		Identificador id = tabela.get(new Identificador(right.getId().toString()));
     		if(!id.isInit()) 
-    			erro("Variável " + id.getNome() + " não inicializada", true);
+    			erro("Variável " + id.getNome() + " não inicializada", false);
     	}
     }
     @Override
@@ -544,13 +542,13 @@ public class Semantic extends DepthFirstAdapter {
     		AVarExp left = (AVarExp)node.getLeft();
     		Identificador id = tabela.get(new Identificador(left.getId().toString()));
     		if(!id.isInit()) 
-    			erro("Variável " + id.getNome() + " não inicializada", true);
+    			erro("Variável " + id.getNome() + " não inicializada", false);
     	}
     	if(node.getRight() instanceof AVarExp) {
     		AVarExp right = (AVarExp)node.getRight();
     		Identificador id = tabela.get(new Identificador(right.getId().toString()));
     		if(!id.isInit()) 
-    			erro("Variável " + id.getNome() + " não inicializada", true);
+    			erro("Variável " + id.getNome() + " não inicializada", false);
     	}
     }
     @Override
@@ -561,7 +559,7 @@ public class Semantic extends DepthFirstAdapter {
     		AVarExp exp = (AVarExp)node.getExp();
     		Identificador id = tabela.get(new Identificador(exp.getId().toString()));
     		if(!id.isInit()) 
-    			erro("Variável " + id.getNome() + " não inicializada", true);
+    			erro("Variável " + id.getNome() + " não inicializada", false);
     	}
     	
     }
@@ -573,7 +571,7 @@ public class Semantic extends DepthFirstAdapter {
     		AVarExp exp = (AVarExp)node.getExp();
     		Identificador id = tabela.get(new Identificador(exp.getId().toString()));
     		if(!id.isInit()) 
-    			erro("Variável " + id.getNome() + " não inicializada", true);
+    			erro("Variável " + id.getNome() + " não inicializada", false);
     	}
     }
     private boolean isVector(PExp node) {
@@ -597,9 +595,8 @@ public class Semantic extends DepthFirstAdapter {
 		id.setInit(true);
 		tabela.altera(id);
 		System.out.println("-------------------------------------------------");
-		
-		
 	}
+	
 	@Override
 	public void outAAttConstCmdSemCmd(AAttConstCmdSemCmd node) {
 		System.out.println("-------------------------------------------------");
@@ -618,8 +615,49 @@ public class Semantic extends DepthFirstAdapter {
 		super.outAAttConstCmdSemCmd(node);
 	}
 	
+	public void outAIctDo(AIctDo node) {
+		if(node.getExp() instanceof AVarExp) {
+    		AVarExp exp = (AVarExp)node.getExp();
+    		Identificador id = tabela.get(new Identificador(exp.getId().toString()));
+    		if(id == null)
+    			erro("Variável não declarada", true);
+    		if(!id.isInit()) 
+    			erro("Variável " + id.getNome() + " não inicializada", false);
+		}
+	}
 	
-    
+	public void outAIctDoElse(AIctDoElse node) {
+		if(node.getExp() instanceof AVarExp) {
+    		AVarExp exp = (AVarExp)node.getExp();
+    		Identificador id = tabela.get(new Identificador(exp.getId().toString()));
+    		if(id == null)
+    			erro("Variável não declarada", true);
+    		if(!id.isInit()) 
+    			erro("Variável " + id.getNome() + " não inicializada", false);
+    	}
+	}
+	
+	public void outAIctDoElseNoShortIct(AIctDoElseNoShortIct node) {
+		if(node.getExp() instanceof AVarExp) {
+    		AVarExp exp = (AVarExp)node.getExp();
+    		Identificador id = tabela.get(new Identificador(exp.getId().toString()));
+    		if(id == null)
+    			erro("Variável não declarada", true);
+    		if(!id.isInit()) 
+    			erro("Variável " + id.getNome() + " não inicializada", false);
+    	}
+	}
+	
+	public void outAAsLongAsIterationCmd(AAsLongAsIterationCmd node) {
+		if(node.getCond() instanceof AVarExp) {
+    		AVarExp exp = (AVarExp)node.getCond();
+    		Identificador id = tabela.get(new Identificador(exp.getId().toString()));
+    		if(id == null)
+    			erro("Variável não declarada", true);
+    		if(!id.isInit()) 
+    			erro("Variável " + id.getNome() + " não inicializada", false);
+    	}
+	}
 	
 	
 }
