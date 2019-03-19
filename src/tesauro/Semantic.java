@@ -25,8 +25,6 @@ public class Semantic extends DepthFirstAdapter {
     {
 		if(node instanceof ABloco) {
         	System.out.println("-------------------------------------------------");
-        	System.out.println("Bloco: " + node.getClass());
-        	System.out.println("Tamanho: " + tabela.size());
         	System.out.println("Hash: " + tabela);
 
           
@@ -55,7 +53,6 @@ public class Semantic extends DepthFirstAdapter {
 	}
 @Override
  	public void inAPrograma(APrograma node){
-		System.out.println("Programa");
 		id_programa =node.getId().toString();
         defaultIn(node);
     }
@@ -205,22 +202,9 @@ public class Semantic extends DepthFirstAdapter {
 	}
 	@Override
 	public void outAVarDeclaracao(AVarDeclaracao node) {
-		System.out.println("-------------------------------------------------");
-		System.out.println("O tipo desta declaração é " + node.getTipo());
-		  
-		//node.getIdentificadores é a lista de nome de veriáveis. Ela é uma lista porque eu 
-		//a defini desta maneira na minha gramática abstrata.
-		System.out.print("Variáveis: ");
+
 		List<TId> copy = new ArrayList<TId>(node.getLista());
 		
-        for(TId e : copy)
-        {
-      	  //e contém o token associado a cada var da lista. 
-            System.out.print(e.toString());
-        } 
-        System.out.print(node.getId().toString());
-        System.out.println();
-        System.out.println("Ações a serem tomadas na tabela de símbolos:");
         boolean res;
         String tipo;
         boolean is_vetor = false;
@@ -237,7 +221,6 @@ public class Semantic extends DepthFirstAdapter {
     			erro("Constante não pode ter o mesmo identificador que o  programa", true);
     		}
         	res = tabela.add(new Identificador(e.toString(), tipo, false, false, is_vetor, false));
-            System.out.println("-->Inserir ( "+ e.toString()+", " +node.getTipo()+")");
             
             if(!res)
             	erro("Variável já foi declarada", true);
@@ -248,19 +231,10 @@ public class Semantic extends DepthFirstAdapter {
         res = tabela.add(new Identificador(node.getId().toString(), tipo, false, false, is_vetor, false));
         if(!res)
         	erro("Variável já foi declarada", true);
-        System.out.println("-->Inserir ( "+ node.getId().toString()+", " +tipo+")");
 	}
 	@Override
 	public void outAConstanteDeclaracao(AConstanteDeclaracao node) {
-		System.out.println("-------------------------------------------------");
-		System.out.println("O tipo desta declaração é " + node.getTipo());
-		  
-		//node.getIdentificadores é a lista de nome de veriáveis. Ela é uma lista porque eu 
-		//a defini desta maneira na minha gramática abstrata. 
-		System.out.print("Constantes: ");
-		System.out.print(node.getId().toString());
-        System.out.println();
-        System.out.println("Ações a serem tomadas na tabela de símbolos:");
+		
         boolean res;
         if(node.getId().toString().equals(id_programa)) {
 			erro("Variável não pode ter o mesmo identificador que o  programa", true);
@@ -271,26 +245,18 @@ public class Semantic extends DepthFirstAdapter {
 			res = tabela.add(new Identificador(node.getId().toString(), tipo.getTipo().toString(), false, false, true, true));
 			if(!res)
 				erro("Variável já foi declarada", true);
-	        System.out.println("-->Inserir ( "+ node.getId().toString()+", " + tipo.getTipo().toString()+" )");
 		}else {
 												//nome, tipo, init, prog, constante
 			res = tabela.add(new Identificador(node.getId().toString(), node.getTipo().toString(), false, false, false, true));
 			if(!res)
 				erro("Variável já foi declarada", true);
-			System.out.println("-->Inserir ( "+ node.getId().toString()+", " + node.getTipo()+")");
 		}
        
        
 	}
 	@Override
 	public void outAConstAttDeclaracao(AConstAttDeclaracao node) {
-		System.out.println("-------------------------------------------------");
-		System.out.println("O tipo desta declaração é " + node.getTipo());
-		System.out.print("Constantes: ");
-		System.out.print(node.getId().toString());
-		System.out.print("Expressão: ");
-		System.out.println(node.getExp().toString());
-		System.out.println("Ações a serem tomadas na tabela de símbolos: ");
+
 		boolean res;
 		if(node.getId().toString().equals(id_programa)) {
 			erro("Constante não pode ter o mesmo identificador que o  programa", true);
@@ -301,26 +267,22 @@ public class Semantic extends DepthFirstAdapter {
 			res = tabela.add(new Identificador(node.getId().toString(), tipo.getTipo().toString(), true, false, true, true));
 			if(!res)
 				erro("Variável já foi declarada", true);
-	        System.out.println("-->Inserir ( "+ node.getId().toString()+", " + tipo.getTipo().toString().replaceAll(" ", "V")+" )");
 		}else {
 												//nome, tipo, init, prog, vetor, constante
 			res = tabela.add(new Identificador(node.getId().toString(), node.getTipo().toString(), true, false, false, true));
 			if(!res)
 				erro("Variável já foi declarada", true);
-			System.out.println("-->Inserir ( "+ node.getId().toString()+", " + node.getTipo()+")");
 		}
        
 	}
 	@Override
     public void outAVarExp(AVarExp node) {
-		System.out.println("-------------------------------------------------");
-		System.out.println("Verificar se a variável " + node.getId() + " está na tabela.");
 		if(node.getId().toString().equals(id_programa)) {
 			erro("Variável não pode ter o mesmo identificador que o  programa", true);
 		}
 		Identificador id = tabela.get(new Identificador(node.getId().toString()));
 		if(id == null)
-			erro("Variável não foi declarada", true);
+			erro("Variável " + node.getId() +"não foi declarada", true);
     }
     public void outExp(PExp node) {
 		if(compativel(node)  == -1) 
@@ -596,7 +558,6 @@ public class Semantic extends DepthFirstAdapter {
 	@Override
 	public void outAAttVarCmdSemCmd(AAttVarCmdSemCmd node) {
 		// TODO Auto-generated method stub
-		System.out.println("-------------------------------------------------");
 		AVarExp left = (AVarExp) node.getLeft();
 		Identificador id = tabela.get(new Identificador(left.getId().toString()));
 		
@@ -608,12 +569,10 @@ public class Semantic extends DepthFirstAdapter {
 		
 		id.setInit(true);
 		tabela.altera(id);
-		System.out.println("-------------------------------------------------");
 	}
 	
 	@Override
 	public void outAAttConstCmdSemCmd(AAttConstCmdSemCmd node) {
-		System.out.println("-------------------------------------------------");
 		AVarExp left = (AVarExp) node.getLeft();
 		Identificador id = tabela.get(new Identificador(left.getId().toString()));
 		if(!id.isConstante()) {
@@ -624,7 +583,6 @@ public class Semantic extends DepthFirstAdapter {
 		}
 		id.setInit(true);
 		tabela.altera(id);
-		System.out.println("-------------------------------------------------");
 		
 		super.outAAttConstCmdSemCmd(node);
 	}
@@ -634,7 +592,10 @@ public class Semantic extends DepthFirstAdapter {
 		Identificador id = tabela.get(new Identificador(exp.getId().toString()));
 		if(id.isConstante() && id.isInit()) {
 			erro("O valor da constante " + id.getNome() + " não pode ser alterado", true);
+			
 		}
+		id.setInit(true);
+		tabela.altera(id);
 		List<PExp> rest = node.getLista();
 		for (PExp pExp : rest) {
 			AVarExp e = (AVarExp)pExp;
@@ -642,6 +603,8 @@ public class Semantic extends DepthFirstAdapter {
 			if(id.isConstante() && id.isInit()) {
 				erro("O valor da constante " + id.getNome() + " não pode ser alterado", true);
 			}
+			id.setInit(true);
+			tabela.altera(id);
 			
 		}
 	}
@@ -654,26 +617,41 @@ public class Semantic extends DepthFirstAdapter {
 		}
 	}
 	@Override
-	public void outAConsideringIterationCmd(AConsideringIterationCmd node) {
+	public void inAConsideringIterationCmd(AConsideringIterationCmd node) {
 		AVarExp var = (AVarExp)node.getI();
+		
+		if(var.toString().equals(id_programa)) {
+			erro("Variável não pode ter o mesmo identificador que o  programa", true);
+		}
 		Identificador id = tabela.get(new Identificador(var.getId().toString()));
+		if(id == null)
+			erro("Variável " + var.getId() +"não foi declarada", true);
 		if(id.isVetor() && var.getExp().size() == 0) {
-			erro("A variável não pode ser um vetor", true);
+			erro("A variável "+ var.getId() +"não pode ser um vetor", true);
 		}
 		if(id.isConstante()) {
-			erro("A variável não pode ser uma consante", true);
+			erro("A variável "+ var.getId() +" não pode ser uma consante", true);
 		}
-		
+		id.setInit(true);
+		tabela.altera(id);
 	}
 	@Override
-	public void outAConsideringIterationCmdNoShortIct(AConsideringIterationCmdNoShortIct node) {
+	public void inAConsideringIterationCmdNoShortIct(AConsideringIterationCmdNoShortIct node) {
 		AVarExp var = (AVarExp)node.getI();
+		
+		if(var.toString().equals(id_programa)) {
+			erro("Variável não pode ter o mesmo identificador que o  programa", true);
+		}
 		Identificador id = tabela.get(new Identificador(var.getId().toString()));
+		if(id == null)
+			erro("Variável " + var.getId() +"não foi declarada", true);
 		if(id.isVetor() && var.getExp().size() == 0) {
-			erro("A variável não pode ser um vetor", true);
+			erro("A variável "+ var.getId() +"não pode ser um vetor", true);
 		}
 		if(id.isConstante()) {
-			erro("A variável não pode ser uma consante", true);
+			erro("A variável "+ var.getId() +" não pode ser uma consante", true);
 		}
+		id.setInit(true);
+		tabela.altera(id);
 	}
 }

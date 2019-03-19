@@ -23,7 +23,6 @@ public class Tabela {
 		Identificador res = get(id);
 		if(res != null && res.getTipo().equals(id.getTipo()))
 			return false;
-		System.out.println("Inserindo " + id + "na tabela");
 		hash.put(id.hashCode(), id);
 		return true;
 	}

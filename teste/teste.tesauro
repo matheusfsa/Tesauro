@@ -13,7 +13,6 @@ start
 		start
 			as long as (l > 2) do
 				start
-				
 					real m;
 		  			m := l+r /2;
 	  			finish

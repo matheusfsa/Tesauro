@@ -1,5 +1,5 @@
 code sparse_table start
-	integer n, k;
+	integer n, k,i;
 	integer q, l, r, j;
 	integer vector [10][11] st;	
 	integer vector [10] vetorzera;
@@ -25,10 +25,11 @@ code sparse_table start
 	considering j from 1 to k by 1 do
 	start
 		integer exp;
-		integer exp_dois;
+		integer exp_dois, b;
 		i := 0;
 		exp := 1;
 		exp_dois := 1;
+		
 		considering b from 1 to j by 1 do
 		start
 			exp := exp*2;
@@ -52,8 +53,9 @@ code sparse_table start
 	
 	as long as((q > 0) and ( (q > 0) xor !1)) do
 	start
-		
-		integer expj;
+		integer b;
+		integer exp, expj;
+		exp := 1;
 		expj := 1;
 		show("Digite o limite inferior aí, meu consagrado: ");
 		capture(l);
@@ -63,6 +65,7 @@ code sparse_table start
 		show("Ta aí o resultado, meu consagrado: ");
 		
 		j :=  r - l + 1;
+		
 		considering b from 1 to j by 1 do
 			exp := exp*2;
 		in case that (st[9][10] < st[9][10]) do
