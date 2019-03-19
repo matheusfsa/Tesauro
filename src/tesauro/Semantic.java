@@ -657,32 +657,23 @@ public class Semantic extends DepthFirstAdapter {
 	public void outAConsideringIterationCmd(AConsideringIterationCmd node) {
 		AVarExp var = (AVarExp)node.getI();
 		Identificador id = tabela.get(new Identificador(var.getId().toString()));
-		System.out.println("Variável i: " + var);
-		System.out.println(id.isVetor());
 		if(id.isVetor() && var.getExp().size() == 0) {
 			erro("A variável não pode ser um vetor", true);
 		}
 		if(id.isConstante()) {
 			erro("A variável não pode ser uma consante", true);
 		}
-		verificaVariavel(node.getInc());
-		verificaVariavel(node.getIni());
-		verificaVariavel(node.getFim());
+		
 	}
 	@Override
 	public void outAConsideringIterationCmdNoShortIct(AConsideringIterationCmdNoShortIct node) {
 		AVarExp var = (AVarExp)node.getI();
 		Identificador id = tabela.get(new Identificador(var.getId().toString()));
-		System.out.println("Variável i: " + var);
-		System.out.println(id.isVetor());
 		if(id.isVetor() && var.getExp().size() == 0) {
 			erro("A variável não pode ser um vetor", true);
 		}
 		if(id.isConstante()) {
 			erro("A variável não pode ser uma consante", true);
 		}
-		verificaVariavel(node.getInc());
-		verificaVariavel(node.getIni());
-		verificaVariavel(node.getFim());
 	}
 }
