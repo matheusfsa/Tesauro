@@ -4,13 +4,10 @@ start
 	unalterable integer i;
 	integer m, l, r;
 	integer vector[10] x;
-	x[1] := 1;
-	m:= l+r/2;
+	x[0] := 3;
+	l := 3;
+	r := 2;
+	m:= l+r + txt /2;
 	
-	in case that (m > 2) do
-		start 
-			real m;
-			m := 3;
-		finish
 	
 finish

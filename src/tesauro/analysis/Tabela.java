@@ -49,4 +49,7 @@ public class Tabela {
 		else
 			return hash.toString() + "<-" + next.toString();
 	}
+	public void altera(Identificador id_new) {
+		hash.replace(id_new.hashCode(), id_new);
+	}
 }

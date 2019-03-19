@@ -83,7 +83,7 @@ public final class AVarDeclaracao extends PDeclaracao
             e.parent(null);
         }
         this._lista_.clear();
-        
+
         for(Object obj_e : list)
         {
             TId e = (TId) obj_e;

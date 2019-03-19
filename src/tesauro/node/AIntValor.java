@@ -8,6 +8,7 @@ import tesauro.analysis.*;
 public final class AIntValor extends PValor
 {
     private TIntVal _intVal_;
+
     public AIntValor()
     {
         // Constructor

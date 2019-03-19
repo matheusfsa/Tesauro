@@ -19,8 +19,7 @@ public final class AMinUnExp extends PExp
     {
         // Constructor
         setExp(_exp_);
-        setValor(_exp_);
-        setOp_tipo(0);
+
     }
 
     @Override

@@ -1,4 +1,4 @@
-package tesauro;
+package tesauro.analysis;
 
 import tesauro.node.*;
 import tesauro.analysis.*;

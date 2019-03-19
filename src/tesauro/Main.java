@@ -11,7 +11,7 @@ public class Main
  {
   try
   {
-   String arquivo = "teste/kmp.tesauro";
+   String arquivo = "teste/teste.tesauro";
   
    Parser p =
     new Parser(

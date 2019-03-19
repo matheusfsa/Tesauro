@@ -11,7 +11,7 @@ import tesauro.node.*;
 
 public class Semantic extends DepthFirstAdapter {
 	private ArrayList<HashMap<Integer, Identificador>> tabs;
-	private static String[] tipos_simples = {"Integer", "SymVal", "Real"};
+	private static String[] tipos_simples = {"integer", "symbol", "real"};
 	private static ArrayList<String> t_simples = new ArrayList<>(Arrays.asList(tipos_simples)); 
 	private static String[] tipos_composto = {"SymValV", "IntegerV", "RealV"};
 	private static ArrayList<String> t_composto = new ArrayList<>(Arrays.asList(tipos_composto));
@@ -69,26 +69,144 @@ public class Semantic extends DepthFirstAdapter {
 	public void outAPrograma(APrograma node) {
 		defaultOut(node);
 	}
-	public static int compativel(PExp node) {
+//EXP
+	private String getTipo(PExp node) {
+		String tipo_l;
+		String tipo_r;
+		if(node instanceof AMenorExp || node instanceof AMenorIExp || node instanceof AMaiorExp || 
+				node instanceof AMaiorIExp || node instanceof AIgualExp || node instanceof ADiffExp || 
+				node instanceof AOrExp || node instanceof AAndExp || node instanceof AXorExp || node instanceof ANotExp) 
+			return "integer";
+		if(node instanceof ASymValExp) {
+			return "symbol";
+		}
+		if(node instanceof ASymVecValExp) {
+			return "symbol";
+		}
+		
+		if(node instanceof AIntValExp) {
+			return "integer";
+		}
+		if(node instanceof ARealValExp) {
+			return "real";
+		}
+		if(node instanceof AMinusExp) {
+			AMinusExp no = (AMinusExp)node;
+			tipo_l = getTipo(no.getLeft());
+			tipo_r = getTipo(no.getRight());
+			if(tipo_l.equals("real") || tipo_r.equals("real"))
+				return "real";
+			else 
+				return "integer";
+		}
+		if(node instanceof ASumExp) {
+			ASumExp no = (ASumExp)node;
+			tipo_l = getTipo(no.getLeft());
+			tipo_r = getTipo(no.getRight());
+			if(tipo_l.equals("real") || tipo_r.equals("real"))
+				return "real";
+			else 
+				return "integer";
+		}
+		if(node instanceof AMultExp) {
+			AMultExp no = (AMultExp)node;
+			tipo_l = getTipo(no.getLeft());
+			tipo_r = getTipo(no.getRight());
+			if(tipo_l.equals("real") || tipo_r.equals("real"))
+				return "real";
+			else 
+				return "integer";
+		}
+		if(node instanceof ADivExp) {
+			ADivExp no = (ADivExp)node;
+			tipo_l = getTipo(no.getLeft());
+			tipo_r = getTipo(no.getRight());
+			if(tipo_l.equals("real") || tipo_r.equals("real"))
+				return "real";
+			else 
+				return "integer";
+		}
+		if(node instanceof AModExp) {
+			AModExp no = (AModExp)node;
+			tipo_l = getTipo(no.getLeft());
+			tipo_r = getTipo(no.getRight());
+			if(tipo_l.equals("real") || tipo_r.equals("real"))
+				return "real";
+			else 
+				return "integer";
+		}
+		if(node instanceof AMinUnExp) {
+			AMinUnExp no = (AMinUnExp)node;
+			tipo_l = getTipo(no.getExp());
+			return tipo_l;
+		}
+		if(node instanceof AVarExp) {
+			AVarExp no = (AVarExp)node;
+			Identificador id = tabela.get(new Identificador(no.toString()));
+			return id.getTipo();
+		}
+		return null;
+
+
+			
+	}
+	private boolean isVec(PExp node) {
+		if(node instanceof AVarExp) {
+			AVarExp no = (AVarExp)node;
+			Identificador id = tabela.get(new Identificador(no.getId().toString()));
+			return id.isVetor() && no.getExp().size()==0;
+		}
+		return false;
+	}
+	private  int compativel(PExp node) {
 		/**
 		 * -1: erro
 		 * 0: warning
 		 * 1: show
 		 */
-		if(node.getOp_tipo() <= 1 ) {
+		String tipo_l;
+		String tipo_r;
+		if(node instanceof AMenorExp || node instanceof AMenorIExp || node instanceof AMaiorExp || 
+				node instanceof AMaiorIExp || node instanceof AIgualExp || node instanceof ADiffExp || 
+				node instanceof AOrExp || node instanceof AAndExp || node instanceof AXorExp || node instanceof ANotExp)
 			return 1;
-		}
-		if(node.getValor() == null) {
-			if(node.getRight().getIsVec() == 1  || node.getRight().getIsVec() == 1 ) 
+		if(node instanceof AMinusExp) {
+			AMinusExp no = (AMinusExp)node;
+			if(isVec(no.getLeft()) || isVec(no.getRight()) ) 
 				return -1;
 			return 1;
-			
-		}else {
-			if(node.getValor().getIsVec() == 1) 
+		}
+		if(node instanceof ASumExp) {
+			ASumExp no = (ASumExp)node;
+			if(isVec(no.getLeft()) || isVec(no.getRight()) ) 
 				return -1;
 			return 1;
-			
 		}
+		if(node instanceof ADivExp) {
+			ADivExp no = (ADivExp)node;
+			if(isVec(no.getLeft()) || isVec(no.getRight()) ) 
+				return -1;
+			return 1;
+		}
+		if(node instanceof AMultExp) {
+			AMultExp no = (AMultExp)node;
+			if(isVec(no.getLeft()) || isVec(no.getRight()) ) 
+				return -1;
+			return 1;
+		}
+		if(node instanceof AModExp) {
+			AModExp no = (AModExp)node;
+			if(isVec(no.getLeft()) || isVec(no.getRight()) ) 
+				return -1;
+			return 1;
+		}
+		if(node instanceof AMinUnExp) {
+			AMinUnExp no = (AMinUnExp)node;
+			if(isVec(no.getExp()) ) 
+				return -1;
+			return 1;
+		}
+		return 1;
 		
 	}
 	@Override
@@ -126,10 +244,10 @@ public class Semantic extends DepthFirstAdapter {
             if(!res)
             	erro("Variável já foi declarada", true);
         }
-        res = tabela.add(new Identificador(node.getId().toString(), node.getTipo().toString(), false, false, is_vetor, false));
+        res = tabela.add(new Identificador(node.getId().toString(), tipo, false, false, is_vetor, false));
         if(!res)
         	erro("Variável já foi declarada", true);
-        System.out.println("-->Inserir ( "+ node.getId().toString()+", " +node.getTipo()+")");
+        System.out.println("-->Inserir ( "+ node.getId().toString()+", " +tipo+")");
 	}
 	@Override
 	public void outAConstanteDeclaracao(AConstanteDeclaracao node) {
@@ -187,58 +305,297 @@ public class Semantic extends DepthFirstAdapter {
 	@Override
     public void outAVarExp(AVarExp node) {
 		System.out.println("-------------------------------------------------");
-		System.out.println("Classe: " + node.getClass());
 		System.out.println("Verificar se a variável " + node.getId() + " está na tabela.");
-		node.setOp_tipo(-1);
 		Identificador id = tabela.get(new Identificador(node.getId().toString()));
 		if(id == null)
 			erro("Variável não foi declarada", true);
-		if(id.isInit())
-			node.setIsInit(1);
-		else
-			node.setIsInit(0);
-		if(id.isConstante())
-			node.setIsConstant(1);
-		else
-			node.setIsConstant(0);
-		if(node.getExp().size() > 0)
-			node.setIsVec(0);
-		else {
-			if(id.isVetor())
-				node.setIsVec(1);
-		}
-		//SÓ PARA TESTE
-		//System.out.println(id.getTipo().getClass());
-		node.setTipo(id.getTipo());
     }
     public void outExp(PExp node) {
-		if(Semantic.compativel(node) > -1) {
-			if(node.getOp_tipo()>-1) {
-					if(node.getOp_tipo() == 0 || node.getOp_tipo() == 1) {
-						node.setTipo("Integer");
-					}else {
-						if(node.getLeft().getTipo().equals("Real") || node.getRight().getTipo().equals("Real")) 
-							node.setTipo("Real");
-						else
-							node.setTipo("Integer");
-					}
-			}
-		}else {
+		if(compativel(node)  == -1) 
 			erro("Tipos incompatíveis", true);
-		}
 	}
-    
+    @Override
+    public void outAAndExp(AAndExp node) {
+    	if(compativel(node)  == -1) 
+			erro("Tipos incompatíveis", true);
+    	if(node.getLeft() instanceof AVarExp) {
+    		AVarExp left = (AVarExp)node.getLeft();
+    		Identificador id = tabela.get(new Identificador(left.getId().toString()));
+    		if(!id.isInit()) 
+    			erro("Variável " + id.getNome() + " não inicializada", true);
+    	}
+    	if(node.getRight() instanceof AVarExp) {
+    		AVarExp right = (AVarExp)node.getRight();
+    		Identificador id = tabela.get(new Identificador(right.getId().toString()));
+    		if(!id.isInit()) 
+    			erro("Variável " + id.getNome() + " não inicializada", true);
+    	}
+    	
+    }
+    @Override
+    public void outADiffExp(ADiffExp node) {
+    	if(compativel(node)  == -1) 
+			erro("Tipos incompatíveis", true);
+    	if(node.getLeft() instanceof AVarExp) {
+    		AVarExp left = (AVarExp)node.getLeft();
+    		Identificador id = tabela.get(new Identificador(left.getId().toString()));
+    		if(!id.isInit()) 
+    			erro("Variável " + id.getNome() + " não inicializada", true);
+    	}
+    	if(node.getRight() instanceof AVarExp) {
+    		AVarExp right = (AVarExp)node.getRight();
+    		Identificador id = tabela.get(new Identificador(right.getId().toString()));
+    		if(!id.isInit()) 
+    			erro("Variável " + id.getNome() + " não inicializada", true);
+    	}
+    }
+    @Override
+    public void outADivExp(ADivExp node) {
+    	if(compativel(node)  == -1) 
+			erro("Tipos incompatíveis", true);
+    	if(node.getLeft() instanceof AVarExp) {
+    		AVarExp left = (AVarExp)node.getLeft();
+    		Identificador id = tabela.get(new Identificador(left.getId().toString()));
+    		if(!id.isInit()) 
+    			erro("Variável " + id.getNome() + " não inicializada", true);
+    	}
+    	if(node.getRight() instanceof AVarExp) {
+    		AVarExp right = (AVarExp)node.getRight();
+    		Identificador id = tabela.get(new Identificador(right.getId().toString()));
+    		if(!id.isInit()) 
+    			erro("Variável " + id.getNome() + " não inicializada", true);
+    	}
+    }
+    @Override
+    public void outAIgualExp(AIgualExp node) {
+    	if(compativel(node)  == -1) 
+			erro("Tipos incompatíveis", true);
+    	if(node.getLeft() instanceof AVarExp) {
+    		AVarExp left = (AVarExp)node.getLeft();
+    		Identificador id = tabela.get(new Identificador(left.getId().toString()));
+    		if(!id.isInit()) 
+    			erro("Variável " + id.getNome() + " não inicializada", true);
+    	}
+    	if(node.getRight() instanceof AVarExp) {
+    		AVarExp right = (AVarExp)node.getRight();
+    		Identificador id = tabela.get(new Identificador(right.getId().toString()));
+    		if(!id.isInit()) 
+    			erro("Variável " + id.getNome() + " não inicializada", true);
+    	}
+    }
+    @Override
+    public void outAMaiorExp(AMaiorExp node) {
+    	if(compativel(node)  == -1) 
+			erro("Tipos incompatíveis", true);
+    	if(node.getLeft() instanceof AVarExp) {
+    		AVarExp left = (AVarExp)node.getLeft();
+    		Identificador id = tabela.get(new Identificador(left.getId().toString()));
+    		if(!id.isInit()) 
+    			erro("Variável " + id.getNome() + " não inicializada", true);
+    	}
+    	if(node.getRight() instanceof AVarExp) {
+    		AVarExp right = (AVarExp)node.getRight();
+    		Identificador id = tabela.get(new Identificador(right.getId().toString()));
+    		if(!id.isInit()) 
+    			erro("Variável " + id.getNome() + " não inicializada", true);
+    	}
+    }
+    @Override
+    public void outAMaiorIExp(AMaiorIExp node) {
+    	if(compativel(node)  == -1) 
+			erro("Tipos incompatíveis", true);
+    	if(node.getLeft() instanceof AVarExp) {
+    		AVarExp left = (AVarExp)node.getLeft();
+    		Identificador id = tabela.get(new Identificador(left.getId().toString()));
+    		if(!id.isInit()) 
+    			erro("Variável " + id.getNome() + " não inicializada", true);
+    	}
+    	if(node.getRight() instanceof AVarExp) {
+    		AVarExp right = (AVarExp)node.getRight();
+    		Identificador id = tabela.get(new Identificador(right.getId().toString()));
+    		if(!id.isInit()) 
+    			erro("Variável " + id.getNome() + " não inicializada", true);
+    	}
+    }
+    @Override
+    public void outAMenorExp(AMenorExp node) {
+    	if(compativel(node)  == -1) 
+			erro("Tipos incompatíveis", true);
+    	if(node.getLeft() instanceof AVarExp) {
+    		AVarExp left = (AVarExp)node.getLeft();
+    		Identificador id = tabela.get(new Identificador(left.getId().toString()));
+    		if(!id.isInit()) 
+    			erro("Variável " + id.getNome() + " não inicializada", true);
+    	}
+    	if(node.getRight() instanceof AVarExp) {
+    		AVarExp right = (AVarExp)node.getRight();
+    		Identificador id = tabela.get(new Identificador(right.getId().toString()));
+    		if(!id.isInit()) 
+    			erro("Variável " + id.getNome() + " não inicializada", true);
+    	}
+    }
+    @Override
+    public void outAMenorIExp(AMenorIExp node) {
+    	if(compativel(node)  == -1) 
+			erro("Tipos incompatíveis", true);
+    	if(node.getLeft() instanceof AVarExp) {
+    		AVarExp left = (AVarExp)node.getLeft();
+    		Identificador id = tabela.get(new Identificador(left.getId().toString()));
+    		if(!id.isInit()) 
+    			erro("Variável " + id.getNome() + " não inicializada", true);
+    	}
+    	if(node.getRight() instanceof AVarExp) {
+    		AVarExp right = (AVarExp)node.getRight();
+    		Identificador id = tabela.get(new Identificador(right.getId().toString()));
+    		if(!id.isInit()) 
+    			erro("Variável " + id.getNome() + " não inicializada", true);
+    	}
+    }
+    @Override
+    public void outAMinusExp(AMinusExp node) {
+    	if(compativel(node)  == -1) 
+			erro("Tipos incompatíveis", true);
+    	if(node.getLeft() instanceof AVarExp) {
+    		AVarExp left = (AVarExp)node.getLeft();
+    		Identificador id = tabela.get(new Identificador(left.getId().toString()));
+    		if(!id.isInit()) 
+    			erro("Variável " + id.getNome() + " não inicializada", true);
+    	}
+    	if(node.getRight() instanceof AVarExp) {
+    		AVarExp right = (AVarExp)node.getRight();
+    		Identificador id = tabela.get(new Identificador(right.getId().toString()));
+    		if(!id.isInit()) 
+    			erro("Variável " + id.getNome() + " não inicializada", true);
+    	}
+    }
+    @Override
+    public void outAModExp(AModExp node) {
+    	if(compativel(node)  == -1) 
+			erro("Tipos incompatíveis", true);
+    	if(node.getLeft() instanceof AVarExp) {
+    		AVarExp left = (AVarExp)node.getLeft();
+    		Identificador id = tabela.get(new Identificador(left.getId().toString()));
+    		if(!id.isInit()) 
+    			erro("Variável " + id.getNome() + " não inicializada", true);
+    	}
+    	if(node.getRight() instanceof AVarExp) {
+    		AVarExp right = (AVarExp)node.getRight();
+    		Identificador id = tabela.get(new Identificador(right.getId().toString()));
+    		if(!id.isInit()) 
+    			erro("Variável " + id.getNome() + " não inicializada", true);
+    	}
+    }
+    @Override
+    public void outAMultExp(AMultExp node) {
+    	if(compativel(node)  == -1) 
+			erro("Tipos incompatíveis", true);
+    	if(node.getLeft() instanceof AVarExp) {
+    		AVarExp left = (AVarExp)node.getLeft();
+    		Identificador id = tabela.get(new Identificador(left.getId().toString()));
+    		if(!id.isInit()) 
+    			erro("Variável " + id.getNome() + " não inicializada", true);
+    	}
+    	if(node.getRight() instanceof AVarExp) {
+    		AVarExp right = (AVarExp)node.getRight();
+    		Identificador id = tabela.get(new Identificador(right.getId().toString()));
+    		if(!id.isInit()) 
+    			erro("Variável " + id.getNome() + " não inicializada", true);
+    	}
+    }
+    @Override
+    public void outAOrExp(AOrExp node) {
+    	if(compativel(node)  == -1) 
+			erro("Tipos incompatíveis", true);
+    	if(node.getLeft() instanceof AVarExp) {
+    		AVarExp left = (AVarExp)node.getLeft();
+    		Identificador id = tabela.get(new Identificador(left.getId().toString()));
+    		if(!id.isInit()) 
+    			erro("Variável " + id.getNome() + " não inicializada", true);
+    	}
+    	if(node.getRight() instanceof AVarExp) {
+    		AVarExp right = (AVarExp)node.getRight();
+    		Identificador id = tabela.get(new Identificador(right.getId().toString()));
+    		if(!id.isInit()) 
+    			erro("Variável " + id.getNome() + " não inicializada", true);
+    	}
+    }
+    @Override
+    public void outASumExp(ASumExp node) {
+    	if(compativel(node)  == -1) 
+			erro("Tipos incompatíveis", true);
+    	if(node.getLeft() instanceof AVarExp) {
+    		AVarExp left = (AVarExp)node.getLeft();
+    		Identificador id = tabela.get(new Identificador(left.getId().toString()));
+    		if(!id.isInit()) 
+    			erro("Variável " + id.getNome() + " não inicializada", true);
+    	}
+    	if(node.getRight() instanceof AVarExp) {
+    		AVarExp right = (AVarExp)node.getRight();
+    		Identificador id = tabela.get(new Identificador(right.getId().toString()));
+    		if(!id.isInit()) 
+    			erro("Variável " + id.getNome() + " não inicializada", true);
+    	}
+    }
+    @Override
+    public void outAXorExp(AXorExp node) {
+    	if(compativel(node)  == -1) 
+			erro("Tipos incompatíveis", true);
+    	if(node.getLeft() instanceof AVarExp) {
+    		AVarExp left = (AVarExp)node.getLeft();
+    		Identificador id = tabela.get(new Identificador(left.getId().toString()));
+    		if(!id.isInit()) 
+    			erro("Variável " + id.getNome() + " não inicializada", true);
+    	}
+    	if(node.getRight() instanceof AVarExp) {
+    		AVarExp right = (AVarExp)node.getRight();
+    		Identificador id = tabela.get(new Identificador(right.getId().toString()));
+    		if(!id.isInit()) 
+    			erro("Variável " + id.getNome() + " não inicializada", true);
+    	}
+    }
+    @Override
+    public void outAMinUnExp(AMinUnExp node) {
+    	if(compativel(node)  == -1) 
+			erro("Tipos incompatíveis", true);
+    	if(node.getExp() instanceof AVarExp) {
+    		AVarExp exp = (AVarExp)node.getExp();
+    		Identificador id = tabela.get(new Identificador(exp.getId().toString()));
+    		if(!id.isInit()) 
+    			erro("Variável " + id.getNome() + " não inicializada", true);
+    	}
+    	
+    }
+    @Override
+    public void outANotExp(ANotExp node) {
+    	if(compativel(node)  == -1) 
+			erro("Tipos incompatíveis", true);
+    	if(node.getExp() instanceof AVarExp) {
+    		AVarExp exp = (AVarExp)node.getExp();
+    		Identificador id = tabela.get(new Identificador(exp.getId().toString()));
+    		if(!id.isInit()) 
+    			erro("Variável " + id.getNome() + " não inicializada", true);
+    	}
+    }
+    private boolean isVector(PExp node) {
+    	if(node instanceof AVarExp)
+    		return ((AVarExp)node).getExp().size()>0;
+    	return false;
+    }
 	@Override
 	public void outAAttVarCmdSemCmd(AAttVarCmdSemCmd node) {
 		// TODO Auto-generated method stub
 		System.out.println("-------------------------------------------------");
-		if(node.getLeft().getIsConstant() ==  1) {
+		AVarExp left = (AVarExp) node.getLeft();
+		Identificador id = tabela.get(new Identificador(left.getId().toString()));
+		
+		if(id.isConstante())
 			erro("Esse tipo de atribuição não é permitido para constantes", true);
-		}
-		if(node.getLeft().getIsVec() == 1 || node.getRight().getIsVec() == 1 ) {
+		if(!isVector(node.getLeft()) && id.isVetor()) {
 			erro("Esse tipo de atribuição não é permitido para vetores", true);
 		}
 		
+		id.setInit(true);
+		tabela.altera(id);
 		System.out.println("-------------------------------------------------");
 		
 		
@@ -246,32 +603,22 @@ public class Semantic extends DepthFirstAdapter {
 	@Override
 	public void outAAttConstCmdSemCmd(AAttConstCmdSemCmd node) {
 		System.out.println("-------------------------------------------------");
-		if(node.getLeft().getIsConstant() ==  0) {
+		AVarExp left = (AVarExp) node.getLeft();
+		Identificador id = tabela.get(new Identificador(left.getId().toString()));
+		if(!id.isConstante()) {
 			erro("Esse tipo de atribuição não é permitido para variáveis", true);
 		}
-		if(node.getLeft().getIsInit() == 1) {
+		if(id.isInit()) {
 			erro("O valor de uma constante não pode ser alterado", true);
 		}
+		id.setInit(true);
+		tabela.altera(id);
 		System.out.println("-------------------------------------------------");
+		
 		super.outAAttConstCmdSemCmd(node);
 	}
 	
-	@Override
-	public void outASymValExp(ASymValExp node) {
-		node.setTipo("SymVal");
-	}
-	@Override
-	public void outASymVecValExp(ASymVecValExp node) {
-		node.setTipo("SymVal");
-	}
-	@Override
-	public void outAIntValExp(AIntValExp node) {
-		node.setTipo("Integer");
-	}
-    @Override
-    public void outARealValExp(ARealValExp node) {
-    	node.setTipo("Real");
-    }
+	
     
 	
 	

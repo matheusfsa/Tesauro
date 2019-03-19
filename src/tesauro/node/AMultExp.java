@@ -7,6 +7,9 @@ import tesauro.analysis.*;
 @SuppressWarnings("nls")
 public final class AMultExp extends PExp
 {
+    private PExp _left_;
+    private PExp _right_;
+
     public AMultExp()
     {
         // Constructor
@@ -20,7 +23,7 @@ public final class AMultExp extends PExp
         setLeft(_left_);
 
         setRight(_right_);
-        setOp_tipo(2);
+
     }
 
     @Override

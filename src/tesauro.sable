@@ -137,7 +137,7 @@ Productions
     ict_do_else_no_short_ict {-> P.ict_do_else_no_short_ict  } = in_case_that l_par exp r_par do [cmd1]: cmd_no_short_ict else [cmd2]: cmd_no_short_ict {-> New ict_do_else_no_short_ict (exp, cmd1 , cmd2  )  };
 
     att_cmd {-> P.cmd_sem_cmd  } = {att_var} var att exp p_v {-> New cmd_sem_cmd.att_var (var.exp , exp)  }   |
-		{att_const} const var att_const exp p_v {-> New cmd_sem_cmd.att_const (var.exp, exp)  };
+		{att_const}var att_const exp p_v {-> New cmd_sem_cmd.att_const (var.exp, exp)  };
 
     func_cmd {-> P.cmd_sem_cmd  } = {acapturefunccmd} capture l_par var_comma* var r_par p_v {-> New cmd_sem_cmd.capture ([ var_comma.exp ], var.exp)  }   |
 		{ashowfunccmd} show l_par exp_comma* exp r_par p_v {-> New cmd_sem_cmd.show ([ exp_comma.exp], exp)  };
@@ -253,9 +253,7 @@ Abstract Syntax Tree
      {considering} [i]:exp [ini]:exp [fim]:exp [inc]:exp [cmd_cons]:cmd;
 
     iteration_cmd_no_short_ict =
-     {as_long_as} [cond]:exp [cmd_a
-		
-		super.outAAttVarCmdSemCmd(node);a]:cmd_no_short_ict | 
+     {as_long_as} [cond]:exp [cmd_aa]:cmd_no_short_ict | 
      {considering} [i]:exp [ini]: exp  [fim]: exp  [inc]: exp [cmd_cons]:cmd_no_short_ict;
      
     exp =

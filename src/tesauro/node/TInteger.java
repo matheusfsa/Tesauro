@@ -9,12 +9,12 @@ public final class TInteger extends Token
 {
     public TInteger()
     {
-        super.setText("Integer");
+        super.setText("integer");
     }
 
     public TInteger(int line, int pos)
     {
-        super.setText("Integer");
+        super.setText("integer");
         setLine(line);
         setPos(pos);
     }

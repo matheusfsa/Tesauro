@@ -9,12 +9,12 @@ public final class TReal extends Token
 {
     public TReal()
     {
-        super.setText("RealVal");
+        super.setText("real");
     }
 
     public TReal(int line, int pos)
     {
-        super.setText("RealVal");
+        super.setText("real");
         setLine(line);
         setPos(pos);
     }

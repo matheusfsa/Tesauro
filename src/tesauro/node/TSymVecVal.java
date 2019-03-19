@@ -14,7 +14,6 @@ public final class TSymVecVal extends Token
 
     public TSymVecVal(String text, int line, int pos)
     {
-    	
         setText(text);
         setLine(line);
         setPos(pos);
