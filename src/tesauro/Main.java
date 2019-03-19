@@ -1,6 +1,5 @@
 package tesauro;
 import tesauro.parser.*;
-import tesauro.analysis.Semantic;
 import tesauro.lexer.*;
 import tesauro.node.*;
 import java.io.*;

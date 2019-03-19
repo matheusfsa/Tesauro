@@ -1,4 +1,4 @@
-package tesauro.analysis;
+package tesauro;
 
 import java.util.HashMap;
 import java.util.HashSet;

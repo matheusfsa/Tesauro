@@ -1,4 +1,4 @@
-package tesauro.analysis;
+package tesauro;
 
 import java.util.Hashtable;
 
@@ -26,6 +26,12 @@ public class Tabela {
 		System.out.println("Inserindo " + id + "na tabela");
 		hash.put(id.hashCode(), id);
 		return true;
+	}
+	public int size() {
+		if(next == null) {
+			return 1;
+		}else
+			return 1 + next.size();
 	}
 	public Identificador get(Identificador id) {
 		Identificador res = hash.get(id.hashCode());
