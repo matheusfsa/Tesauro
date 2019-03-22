@@ -10,7 +10,7 @@ public class Main
  {
   try
   {
-   String arquivo = "teste/spase_tabela.tesauro";
+   String arquivo = "teste/teste.tesauro";
   
    Parser p =
     new Parser(

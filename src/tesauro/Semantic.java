@@ -24,11 +24,6 @@ public class Semantic extends DepthFirstAdapter {
     public void defaultOut(@SuppressWarnings("unused") Node node)
     {
 		if(node instanceof ABloco) {
-        	System.out.println("-------------------------------------------------");
-        	System.out.println("Hash: " + tabela);
-
-          
-        	
     		tabela = tabela.getNext();
     	}
     	
