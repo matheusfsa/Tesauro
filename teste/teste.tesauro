@@ -5,6 +5,7 @@ start
 	integer m, l, r;
 	integer vector[10] x;
 	real a;
+	a := 1;
 	x[0] := 3;
 	l := 3;
 	r := 'c';

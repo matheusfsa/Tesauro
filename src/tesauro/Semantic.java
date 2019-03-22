@@ -1,6 +1,7 @@
 package tesauro;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 import tesauro.analysis.*;
 
@@ -649,4 +650,140 @@ public class Semantic extends DepthFirstAdapter {
 		id.setInit(true);
 		tabela.altera(id);
 	}
+	class Tabela{
+		private Hashtable<Integer, Identificador> hash;
+		private Tabela next;
+		public Tabela(Tabela next) {
+			this.hash = new Hashtable<>();
+			this.next = next;
+		}
+		public boolean contains(Identificador id) {
+			if(hash.contains(id)) {
+				return true;
+			}else {
+				if(next == null)
+					return false;
+				else
+					return next.contains(id);
+			}
+		}
+		public boolean add(Identificador id) {
+			Identificador res = get(id);
+			if(res != null && res.getTipo().equals(id.getTipo()))
+				return false;
+			hash.put(id.hashCode(), id);
+			return true;
+		}
+		public int size() {
+			if(next == null) {
+				return 1;
+			}else
+				return 1 + next.size();
+		}
+		public Identificador get(Identificador id) {
+			Identificador res = hash.get(id.hashCode());
+			if(res == null) {
+				if(next != null)
+					return next.get(id);
+				else
+					return null;
+			}
+			return res;
+			
+		}
+		public Tabela getNext() {
+			return this.next;
+		}
+		
+		@Override
+		public String toString() {
+			if(next == null)
+				return hash.toString();
+			else
+				return hash.toString() + "<-" + next.toString();
+		}
+		public void altera(Identificador id_new) {
+			hash.replace(id_new.hashCode(), id_new);
+		}
+	}
+	class Identificador {
+		private String nome;
+		private String tipo;
+		private boolean init;
+		private boolean prog;
+		private boolean vetor;
+		private boolean constante;
+		public Identificador(String nome, String tipo, boolean init, boolean prog, boolean vetor,boolean constante) {
+			this.nome = nome;
+			this.tipo = tipo;
+			this.init = init;
+			this.prog = prog;
+			this.vetor = vetor;
+			this.constante = constante;
+		}
+		public Identificador(String nome) {
+			this.nome = nome;
+		}
+		public String getNome() {
+			return nome;
+		}
+		public void setNome(String nome) {
+			this.nome = nome;
+		}
+		public String getTipo() {
+			return tipo;
+		}
+		public void setTipo(String tipo) {
+			this.tipo = tipo;
+		}
+		public boolean isInit() {
+			return init;
+		}
+		public void setInit(boolean init) {
+			this.init = init;
+		}
+		public boolean isprog() {
+			return prog;
+		}
+		public void setprog(boolean prog) {
+			this.prog = prog;
+		}
+		public boolean isVetor() {
+			return vetor;
+		}
+		public void seVetor(boolean vetor) {
+			this.vetor = vetor;
+		}
+		public boolean isConstante() {
+			return constante;
+		}
+		public void setConstante(boolean constante) {
+			this.constante = constante;
+		}
+		@Override
+		public int hashCode() {
+			int n = nome.length();
+			int SHIFT = 4;
+			int temp = 0;
+			int i = 0;
+			while(i < n ) {
+				temp = (temp << SHIFT) + nome.charAt(i);
+				i++;
+			}
+			return Math.abs(temp);
+		}
+		@Override
+		public boolean equals(Object obj) {
+			Identificador other = (Identificador)obj;
+			return nome.equals(other.getNome());
+			
+		}
+		@Override
+		public String toString() {
+			// TODO Auto-generated method stub
+			return "(" + nome +", " + tipo + ")";
+		}
+		
+	}
+
 }
